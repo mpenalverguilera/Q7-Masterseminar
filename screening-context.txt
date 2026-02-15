@@ -1,0 +1,10 @@
+Background
+For decades RPA automated structured, repetitive tasks via rule-based scripts but is brittle and inflexible. Large Language Models (LLMs) enable cognitive automation—planning, reasoning and decision-making from high‑level instructions—but introduce reliability and compliance failures (long‑context limits, weak self‑correction, hallucinations). Recent work focuses on multi‑component cognitive architectures that scaffold LLM reasoning to combine LLM flexibility with verifiable compliance for reliable long‑horizon enterprise automation.
+Research questions
+RQ1 - What problems and challenges do exist in both classical agents and LM-based agents? 
+RQ2 - How does Multiagent systems [MAS] and agentic AI address the challenges in RQ1.
+RQ3 - What cognitive architectures and agent control models should future enterprise RPA systems adopt to achieve reliable long-horizon task automation, and which functional mechanisms, for example hierarchical planning, durable memory, self correction, and compliance reasoning, are necessary for that?
+Inclusion Criteria
+Topic relevance: related to the RQ
+Publication type: conference papers, articles, journals
+Language: English

@@ -1,0 +1,32 @@
+PROCESSING LOG - extraction-26-11
+Timestamp: 2025-11-26T16:34:18.077068Z
+
+SUMMARY
+Initial merged rows:            1091
+Null/empty DOIs:               24
+Duplicate rows among non-null DOI: 15
+Final cleaned rows (deduplicated): 1052
+Rows with missing Document title:  0
+Rows with missing Abstract:        0
+
+DETAILS
+Duplicate DOI values (occurred >1 time):
+1. 10.1109/lra.2022.3190076
+2. 10.1109/smc52423.2021.9658822
+3. 10.1145/3676536.3698389
+4. 10.1109/access.2020.3003991
+5. 10.1109/aero50100.2021.9438257
+6. 10.1109/case59546.2024.10711577
+7. 10.1109/icra55743.2025.11128650
+8. 10.1109/tnet.2023.3289172
+9. 10.1109/case58245.2025.11164082
+10. 10.1109/icra55743.2025.11127617
+11. 10.1145/3526071.3527515
+12. 10.1145/3526071.3527520
+13. 10.1109/icra55743.2025.11127692
+14. 10.1145/3528228.3528407
+15. 10.1109/icra57147.2024.10611594
+
+Merged CSV written to: data/raw/extraction-26-11/merged.csv
+Cleaned CSV written to: data/clean/extraction-26-11/cleaned.csv
+Log file: data/clean/extraction-26-11/log.txt

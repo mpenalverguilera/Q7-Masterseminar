@@ -1,0 +1,9 @@
+pandas
+numpy
+genai
+tqdm
+python-dotenv
+google-genai
+tenacity
+google-api-core
+bibtexparser

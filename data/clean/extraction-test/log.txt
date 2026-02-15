@@ -1,0 +1,35 @@
+PROCESSING LOG - extraction-test
+Timestamp: 2025-11-26T16:07:15.606814Z
+
+SUMMARY
+Initial merged rows:            60
+Null/empty DOIs:               0
+Duplicate rows among non-null DOI: 40
+Final cleaned rows (deduplicated): 20
+
+DETAILS
+Duplicate DOI values (occurred >1 time):
+1. 10.1007/s10462-025-11381-w
+2. 10.1007/s10845-024-02494-0
+3. 10.1007/s10916-025-02255-3
+4. 10.1007/s43503-025-00072-8
+5. 10.1016/j.atech.2025.101412
+6. 10.1016/j.comcom.2025.108342
+7. 10.1016/j.commtr.2025.100165
+8. 10.1016/j.comnet.2025.111749
+9. 10.1016/j.engappai.2025.112222
+10. 10.1109/access.2020.3011670
+11. 10.1109/access.2021.3083087
+12. 10.1109/access.2023.3309417
+13. 10.1109/access.2025.3573419
+14. 10.1109/access.2025.3610526
+15. 10.1109/access.2025.3622382
+16. 10.1109/tlt.2014.2367493
+17. 10.1145/3649158.3657034
+18. 10.1145/3772077
+19. 10.23919/jsee.2021.000121
+20. 10.26599/jicv.2023.9210039
+
+Merged CSV written to: data/raw/extraction-test/merged.csv
+Cleaned CSV written to: data/clean/extraction-test/cleaned.csv
+Log file: data/clean/extraction-test/log.txt

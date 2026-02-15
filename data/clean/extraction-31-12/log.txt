@@ -1,0 +1,28 @@
+PROCESSING LOG - extraction-31-12
+Timestamp: 2025-12-31T16:00:19.087941Z
+
+SUMMARY
+Initial merged rows:            276
+Null/empty DOIs:               254
+Duplicate rows among non-null DOI: 11
+Final cleaned rows (deduplicated): 11
+Rows with missing Document title:  182
+Rows with missing Abstract:        242
+
+DETAILS
+Duplicate DOI values (occurred >1 time):
+1. 10.1002/aaai.12036
+2. 10.1007/978-3-031-19842-7_21
+3. 10.1007/978-3-031-33469-6_23
+4. 10.1007/s10514-023-10135-3
+5. 10.1016/b978-1-55860-856-6.x5000-5
+6. 10.1109/iccv51070.2023.00280
+7. 10.1109/icra48891.2023.10161534
+8. 10.1609/icaps.v34i1.31510
+9. 10.18653/v1/2023.findings-emnlp.248
+10. 10.24963/ijcai.2023/839
+11. 10.3389/frobt.2023.1221739
+
+Merged CSV written to: data/raw/extraction-31-12/merged.csv
+Cleaned CSV written to: data/clean/extraction-31-12/cleaned.csv
+Log file: data/clean/extraction-31-12/log.txt

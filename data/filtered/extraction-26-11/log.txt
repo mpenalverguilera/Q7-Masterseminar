@@ -1,0 +1,10 @@
+Processing log for input: data/clean/extraction-26-11/cleaned.csv
+Timestamp: 2025-11-26 18:07:11.090609
+
+Total rows processed: 1052
+Included: 325
+Excluded: 727
+
+Excluded counts by reason:
+- TOPIC: 722
+- PUBLICATION_TYPE: 5

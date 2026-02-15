@@ -1,0 +1,18 @@
+PROCESSING LOG - extraction_2-31-12
+Timestamp: 2025-12-31T16:07:20.477977Z
+
+SUMMARY
+Initial merged rows:            81
+Null/empty DOIs:               68
+Duplicate rows among non-null DOI: 0
+Final cleaned rows (deduplicated): 13
+Rows with missing Document title:  81
+Rows with missing Abstract:        0
+
+DETAILS
+Duplicate DOI values (occurred >1 time):
+(none)
+
+Merged CSV written to: data/raw/extraction_2-31-12/merged.csv
+Cleaned CSV written to: data/clean/extraction_2-31-12/cleaned.csv
+Log file: data/clean/extraction_2-31-12/log.txt
