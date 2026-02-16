@@ -1,0 +1,56 @@
+Id,Nerual,Symbolic
+Paper_04,Generative & Predictive Models,Formal Logic & Solvers
+Paper_06,Discriminative & Perception Models,Formal Logic & Solvers
+Paper_08,Reinforcement Learning,Cognitive Architectures
+Paper_09,Reinforcement Learning,Cognitive Architectures
+Paper_10,Generative & Predictive Models,Classical Planning
+Paper_13,Discriminative & Perception Models,Reactive & Execution Control
+Paper_14,Foundational Models,Cognitive Architectures
+Paper_16,Foundational Models,Formal Logic & Solvers
+Paper_18,Discriminative & Perception Models,Classical Planning
+Paper_19,Foundational Models,Classical Planning
+Paper_20,Discriminative & Perception Models,Knowledge Representation
+Paper_21,Generative & Predictive Models,Knowledge Representation;Reactive & Execution Control
+Paper_22,Generative & Predictive Models,Classical Planning
+Paper_23,Generative & Predictive Models,Classical Planning
+Paper_24,Foundational Models,Knowledge Representation
+Paper_25,Foundational Models;Generative & Predictive Models,Classical Planning
+Paper_26,Reinforcement Learning,Cognitive Architectures
+Paper_27,Reinforcement Learning,Reactive & Execution Control
+Paper_28,Reinforcement Learning,Classical Planning
+Paper_29,Reinforcement Learning,Classical Planning
+Paper_30,Foundational Models;Generative & Predictive Models;Reinforcement Learning,Knowledge Representation
+Paper_31,Foundational Models;Discriminative & Perception Models,Formal Logic & Solvers
+Paper_32,Foundational Models,Classical Planning
+Paper_38,Foundational Models;Reinforcement Learning;Discriminative & Perception Models,Formal Logic & Solvers;Reactive & Execution Control
+Paper_39,Foundational Models,Reactive & Execution Control
+Paper_40,Foundational Models;Reinforcement Learning,Cognitive Architectures
+Paper_41,Foundational Models,Knowledge Representation
+Paper_42,Foundational Models,Formal Logic & Solvers
+Paper_45,Discriminative & Perception Models,Classical Planning
+Paper_46,Reinforcement Learning,Classical Planning
+Paper_47,Generative & Predictive Models,Reactive & Execution Control
+Paper_50,Generative & Predictive Models,Knowledge Representation;Reactive & Execution Control
+Paper_51,Generative & Predictive Models,Knowledge Representation;Reactive & Execution Control
+Paper_52,Foundational Models,Classical Planning
+Paper_53,Foundational Models;Reinforcement Learning,Reactive & Execution Control
+Paper_55,Discriminative & Perception Models,Reactive & Execution Control
+Paper_56,Reinforcement Learning,Classical Planning;Formal Logic & Solvers
+Paper_59,Foundational Models,Formal Logic & Solvers
+Paper_61,Foundational Models,Formal Logic & Solvers
+Paper_62,Discriminative & Perception Models,Knowledge Representation
+Paper_64,Foundational Models,Classical Planning;Cognitive Architectures
+Paper_65,Discriminative & Perception Models,Classical Planning
+Paper_66,Foundational Models;Generative & Predictive Models,Knowledge Representation
+Paper_67,Foundational Models,Classical Planning
+Paper_69,Discriminative & Perception Models,Formal Logic & Solvers
+Paper_70,Foundational Models,Classical Planning
+Paper_76,Foundational Models;Discriminative & Perception Models,Knowledge Representation
+Paper_77,Foundational Models,Formal Logic & Solvers
+Paper_78,Foundational Models,Knowledge Representation;Classical Planning
+Paper_79,Generative & Predictive Models,Classical Planning;Reactive & Execution Control
+Paper_80,Foundational Models,Cognitive Architectures
+Paper_81,Generative & Predictive Models,Formal Logic & Solvers;Classical Planning
+Paper_82,Reinforcement Learning,Cognitive Architectures
+Paper_83,Foundational Models,Classical Planning
+Paper_85,Reinforcement Learning,Classical Planning
