@@ -22,6 +22,10 @@ rq3_scripts = [
     'RQ3/05_bubble_self_correction_compliance.py',
 ]
 
+qa_scripts = [
+    'QA/qa_venues_barchart.py',
+]
+
 def run_scripts(scripts, label):
     """Run a list of scripts and track failures."""
     script_dir = Path(__file__).parent
@@ -69,15 +73,20 @@ if __name__ == "__main__":
     # Parse command line argument
     target = sys.argv[1].lower() if len(sys.argv) > 1 else "all"
     
-    if target not in ["rq2", "rq3", "all"]:
-        print("Usage: python run_all_heatmaps.py [rq2|rq3|all]")
+    if target not in ["qa", "rq2", "rq3", "all"]:
+        print("Usage: python run_all_heatmaps.py [rq2|rq3|qa|all]")
         print("  rq2  - Run only RQ2 (challenges) scripts")
         print("  rq3  - Run only RQ3 (approaches) scripts")
+        print("  qa   - Run only QA scripts")
         print("  all  - Run all scripts (default)")
         sys.exit(1)
     
     all_failed = []
     
+    if target in ["qa", "all"]:
+        failed = run_scripts(qa_scripts, "QA")
+        all_failed.extend(failed)
+
     if target in ["rq2", "all"]:
         failed = run_scripts(rq2_scripts, "RQ2")
         all_failed.extend(failed)
