@@ -1,6 +1,5 @@
 pandas
 numpy
-genai
 tqdm
 python-dotenv
 google-genai
