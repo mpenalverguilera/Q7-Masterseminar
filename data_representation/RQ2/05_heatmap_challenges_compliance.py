@@ -24,10 +24,7 @@ compliance_only = merged[['id', 'compliance_reasoning_list']].explode('complianc
 compliance_only = compliance_only.dropna(subset=['compliance_reasoning_list'])
 unique_counts_per_compliance = compliance_only.groupby('compliance_reasoning_list')['id'].nunique()
 
-df_absolute = pd.crosstab(
-	long_df['primary_challenges_list'],
-	long_df['compliance_reasoning_list']
-)
+df_absolute = long_df.groupby(['primary_challenges_list', 'compliance_reasoning_list']).size().unstack(fill_value=0)
 
 # Column-wise normalization: divide by unique paper counts per approach
 df_normalized = df_absolute.div(unique_counts_per_compliance, axis=1) * 100

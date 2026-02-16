@@ -31,10 +31,7 @@ memory_only = memory_only.dropna(subset=['memory_type_list'])
 unique_counts_per_memory = memory_only.groupby('memory_type_list')['id'].nunique()
 
 # Create crosstab
-df_absolute = pd.crosstab(
-	long_df['symbolic_architecture_list'],
-	long_df['memory_type_list']
-)
+df_absolute = long_df.groupby(['symbolic_architecture_list', 'memory_type_list']).size().unstack(fill_value=0)
 
 # Column-wise normalization: divide by unique paper counts per memory type
 df_normalized = df_absolute.div(unique_counts_per_memory, axis=1) * 100

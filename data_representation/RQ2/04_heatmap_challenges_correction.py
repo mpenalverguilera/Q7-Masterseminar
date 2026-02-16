@@ -29,10 +29,7 @@ mechanisms_only = mechanisms_only.dropna(subset=['self_correction_list'])
 unique_counts_per_mech = mechanisms_only.groupby('self_correction_list')['id'].nunique()
 
 # Crosstab counts
-df_absolute = pd.crosstab(
-	long_df['primary_challenges_list'],
-	long_df['self_correction_list']
-)
+df_absolute = long_df.groupby(['primary_challenges_list', 'self_correction_list']).size().unstack(fill_value=0)
 
 # Column-wise normalization: divide by unique paper counts per mechanism
 df_normalized = df_absolute.div(unique_counts_per_mech, axis=1) * 100

@@ -27,10 +27,7 @@ neural_only = merged[['id', 'neural_architecture_list']].explode('neural_archite
 neural_only = neural_only.dropna(subset=['neural_architecture_list'])
 unique_counts_per_neural = neural_only.groupby('neural_architecture_list')['id'].nunique()
 
-df_absolute = pd.crosstab(
-	long_df['primary_challenges_list'],
-	long_df['neural_architecture_list']
-)
+df_absolute = long_df.groupby(['primary_challenges_list', 'neural_architecture_list']).size().unstack(fill_value=0)
 
 # Column-wise normalization: divide by unique paper counts per architecture
 df_normalized = df_absolute.div(unique_counts_per_neural, axis=1) * 100

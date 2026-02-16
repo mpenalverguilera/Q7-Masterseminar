@@ -29,10 +29,7 @@ config_only = config_only.dropna(subset=['agent_configuration_list'])
 unique_counts_per_config = config_only.groupby('agent_configuration_list')['id'].nunique()
 
 # Crosstab counts
-df_absolute = pd.crosstab(
-    long_df['primary_challenges_list'],
-    long_df['agent_configuration_list']
-)
+df_absolute = long_df.groupby(['primary_challenges_list', 'agent_configuration_list']).size().unstack(fill_value=0)
 
 # Column-wise normalization: divide by unique paper counts per configuration
 df_normalized = df_absolute.div(unique_counts_per_config, axis=1) * 100

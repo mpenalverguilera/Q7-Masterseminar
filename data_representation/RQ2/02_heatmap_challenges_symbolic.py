@@ -27,10 +27,7 @@ symbolic_only = merged[['id', 'symbolic_mechanism_list']].explode('symbolic_mech
 symbolic_only = symbolic_only.dropna(subset=['symbolic_mechanism_list'])
 unique_counts_per_symbolic = symbolic_only.groupby('symbolic_mechanism_list')['id'].nunique()
 
-df_absolute = pd.crosstab(
-	long_df['primary_challenges_list'],
-	long_df['symbolic_mechanism_list']
-)
+df_absolute = long_df.groupby(['primary_challenges_list', 'symbolic_mechanism_list']).size().unstack(fill_value=0)
 
 # Column-wise normalization: divide by unique paper counts per mechanism
 df_normalized = df_absolute.div(unique_counts_per_symbolic, axis=1) * 100
