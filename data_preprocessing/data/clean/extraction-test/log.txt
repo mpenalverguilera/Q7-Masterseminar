@@ -1,11 +1,13 @@
 PROCESSING LOG - extraction-test
-Timestamp: 2025-11-26T16:07:15.606814Z
+Timestamp: 2026-02-16T18:30:53.691833Z
 
 SUMMARY
-Initial merged rows:            60
-Null/empty DOIs:               0
-Duplicate rows among non-null DOI: 40
+Initial merged rows:            100
+Null/empty DOIs:               2
+Duplicate rows among non-null DOI: 78
 Final cleaned rows (deduplicated): 20
+Rows with missing Document title:  96
+Rows with missing Abstract:        0
 
 DETAILS
 Duplicate DOI values (occurred >1 time):
@@ -26,10 +28,10 @@ Duplicate DOI values (occurred >1 time):
 15. 10.1109/access.2025.3622382
 16. 10.1109/tlt.2014.2367493
 17. 10.1145/3649158.3657034
-18. 10.1145/3772077
-19. 10.23919/jsee.2021.000121
-20. 10.26599/jicv.2023.9210039
+18. 10.23919/jsee.2021.000121
+19. 10.26599/jicv.2023.9210039
+20. 10.1145/3772077
 
-Merged CSV written to: data/raw/extraction-test/merged.csv
-Cleaned CSV written to: data/clean/extraction-test/cleaned.csv
-Log file: data/clean/extraction-test/log.txt
+Merged CSV written to: data\raw\extraction-test\merged.csv
+Cleaned CSV written to: data\clean\extraction-test\cleaned.csv
+Log file: data\clean\extraction-test\log.txt
