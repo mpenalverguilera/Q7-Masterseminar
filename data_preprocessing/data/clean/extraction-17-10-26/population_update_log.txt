@@ -1,5 +1,5 @@
 POPULATION UPDATE LOG - extraction-17-10-26
-Timestamp: 2026-10-17T11:03:04.384763Z
+Timestamp: 2026-10-17T11:09:38.896148Z
 Old population: ..\population_11_10_26.csv
 
 SUMMARY
@@ -34,7 +34,7 @@ A: 1893   B: 441
 EXTRA CHECKS
 Old population null DOIs: 24; internal duplicate DOIs: 15 (old rows kept as-is in current_population)
 A rows missing title/abstract: 0/0
-B rows missing title/abstract: 349/8
+B rows missing title/abstract: 0/8
 A raw rows per file: {'population_a_update_acm_2025_bib_converted.csv': 130, 'population_a_update_acm_2026_bib_converted.csv': 333, 'population_a_update_ieee_2025_only.csv': 738, 'population_a_update_ieee_2026_only.csv': 934, 'population_a_update_scopus_2025_only.csv': 67, 'population_a_update_scopus_2026_only.csv': 101}
 B raw rows per file: {'population_b_acm_bib_converted.csv': 9, 'population_b_ieee_run_1.csv': 2, 'population_b_ieee_run_3.csv': 5, 'population_b_ieee_run_4.csv': 17, 'population_b_ieee_run_5.csv': 2, 'population_b_ieee_run_6.csv': 4, 'population_b_scopus.csv': 90, 'population_b_semantic_scholar.csv': 470}
 A rows added per source (first-seen): {'population_a_update_scopus_2026_only.csv': 69, 'population_a_update_scopus_2025_only.csv': 21, 'population_a_update_ieee_2025_only.csv': 531, 'population_a_update_ieee_2026_only.csv': 923, 'population_a_update_acm_2025_bib_converted.csv': 29, 'population_a_update_acm_2026_bib_converted.csv': 320}
@@ -808,110 +808,110 @@ B: missing DOIs:
 - [population_b_scopus.csv] (2025) ReSpAct: Harmonizing Reasoning, Speaking, and Acting Towards Building Large Language Model-Based Conversationa
 - [population_b_scopus.csv] (2025) GUI-Actor: Coordinate-Free Visual Grounding for GUI Agents
 - [population_b_scopus.csv] (2026) Embedding Safe AI Assistants into Web Apps with LLMASP
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2025) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2025) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2025) 
-- [population_b_semantic_scholar.csv] (2025) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2024) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2025) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2025) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2025) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2025) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2025) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2026) 
-- [population_b_semantic_scholar.csv] (2021) 
-- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) AutoGUIWorld: Image Generators as Visual World Models for GUI Agent
+- [population_b_semantic_scholar.csv] (2025) Video-Browser: Towards Open-web Agentic Video Browsing
+- [population_b_semantic_scholar.csv] (2026) Symbolic Temporal Supervision of LLM Agents Using Contracts
+- [population_b_semantic_scholar.csv] (2026) CUA-SWE: When Computer-Use Agents Meet Visual Software Engineering
+- [population_b_semantic_scholar.csv] (2026) Reflection with Action-Induced Visual Differences for Desktop GUI Agents
+- [population_b_semantic_scholar.csv] (2026) Improving Proficiency and Efficiency of Android GUI Agents via Self-Generating Tool Actions
+- [population_b_semantic_scholar.csv] (2026) WebPageBench: Event-Level Verification and Controlled UI-Variant Generation for Web Agents
+- [population_b_semantic_scholar.csv] (2026) DashAct: A Progressive Diagnostic Benchmark for GUI Agents in Interactive Dashboard Analysis
+- [population_b_semantic_scholar.csv] (2026) CaptchaAgent: Verifiable Visual Reasoning for CAPTCHA Solving
+- [population_b_semantic_scholar.csv] (2026) Ouroboros: A Self-Developing Frontier Coding Agent with Reviewed Core Evolution
+- [population_b_semantic_scholar.csv] (2026) OSWorld-Pro: Process-based Evaluation for Computer Use Agents
+- [population_b_semantic_scholar.csv] (2026) HyWe: Unifying Search and Operation for Real-World Hybrid Web Tasks
+- [population_b_semantic_scholar.csv] (2026) ActionEngine: From Reactive to Programmatic Web Agents via State Machine Memory
+- [population_b_semantic_scholar.csv] (2026) SCOUT: Synergizing Reasoning and Tool-Use for Computer-Use Safety
+- [population_b_semantic_scholar.csv] (2026) Work2Skill: Capturing Human GUI Experience for Reusable Agent Skill Induction
+- [population_b_semantic_scholar.csv] (2026) MobileWorldSafety: Benchmarking GUI Agent Safety Against Environmental Injection Attacks in Android Apps
+- [population_b_semantic_scholar.csv] (2026) EconSkills: Studying Skill Transfer and Retrieval for Web Agents on Live Economic Data
+- [population_b_semantic_scholar.csv] (2026) From Tapping to Hopping: Augmenting Mobile GUI Agents with App-Native Deeplinks
+- [population_b_semantic_scholar.csv] (2026) Probe to Act: Elevating Browser-Use Agent via Active Visual Probing
+- [population_b_semantic_scholar.csv] (2025) Test-Time Adaptation for LLM Agents via Environment Interaction
+- [population_b_semantic_scholar.csv] (2026) Few-Shot Demonstrations Elicit the Use of In-Context World Representations in LLMs
+- [population_b_semantic_scholar.csv] (2026) TRACE: Trajectory-robust Admission with Evidence Ordering for Efficient GUI Agents
+- [population_b_semantic_scholar.csv] (2026) APPSim-Bench: Bridging Real-world Apps and Reproducible Evaluation for Mobile GUI Agents
+- [population_b_semantic_scholar.csv] (2026) AgentHorizon: Evaluating Agentic Judges for Long-Horizon Computer-Use Tasks
+- [population_b_semantic_scholar.csv] (2026) Latent World Action Model for GUI Agents
+- [population_b_semantic_scholar.csv] (2026) Qwen-CUA: Native Computer Use for (almost) Everything
+- [population_b_semantic_scholar.csv] (2026) Agentic Cognitive Depth: Operational Criteria for Evaluating LLM Agents
+- [population_b_semantic_scholar.csv] (2025) MMSearch-Plus: Benchmarking Provenance-Aware Search for Multimodal Browsing Agents
+- [population_b_semantic_scholar.csv] (2025) ResTest: Targeted Coverage of Residual Not-Covered Code Using Large Language Models for Web GUI Testing
+- [population_b_semantic_scholar.csv] (2026) GSAR: Goal-State-Anchor Rewards for Mobile GUI Agents with Self-Evolving Data Synthesis
+- [population_b_semantic_scholar.csv] (2026) SynWeaver: Website-Prior Task and Trajectory Co-Synthesis for Web Agents
+- [population_b_semantic_scholar.csv] (2026) PrivacyGuard: Source-Linked Sanitization and Locally Resolvable PII References for Cloud GUI Agents
+- [population_b_semantic_scholar.csv] (2026) LiteGUI: Lightweight GUI Agents via Multi-Solution Guided Distillation and Dual-Level Reinforcement Learning
+- [population_b_semantic_scholar.csv] (2026) Seg2Click: Learning Pixel-Level Action Masks for GUI Visual Grounding
+- [population_b_semantic_scholar.csv] (2026) RSIAgent: Autonomous Exploration for Recursive Self-improvement in New Environments
+- [population_b_semantic_scholar.csv] (2026) Learning Reliable GUI Agents under Imperfect Priors
+- [population_b_semantic_scholar.csv] (2026) Training Needs Trustworthy Worlds: Verified Synthetic Web Environments for Agent Learning
+- [population_b_semantic_scholar.csv] (2026) CoAdapt-GUI: Joint Workflow Context and Policy Adaptation for Unseen GUI Applications
+- [population_b_semantic_scholar.csv] (2026) ComputerSD: Online Self-Distillation from Real-Time Feedback for Computer-Use Agents
+- [population_b_semantic_scholar.csv] (2024) Dissecting Adversarial Robustness of Multimodal LM Agents
+- [population_b_semantic_scholar.csv] (2026) How GUI Agents Fail: GraceBench for Execution Stability Diagnosis
+- [population_b_semantic_scholar.csv] (2026) AppDeltaWorld: Transition-Grounded Delta Code World Model for Mobile GUI Agents
+- [population_b_semantic_scholar.csv] (2026) BrowserForge: Scaling Web Episode via Parallel Browser Sandboxes
+- [population_b_semantic_scholar.csv] (2026) DarwinX: Evolving Agent Harnesses Through Natural Selection
+- [population_b_semantic_scholar.csv] (2026) WM-R1: Training GUI Agents to Reason and leverage World Models with Reinforcement Learning
+- [population_b_semantic_scholar.csv] (2026) UI-Venus-2 Technical Report
+- [population_b_semantic_scholar.csv] (2026) Inducing Task Models from Computer-Use Traces
+- [population_b_semantic_scholar.csv] (2025) General Agentic Planning Through Simulative Reasoning with World Models
+- [population_b_semantic_scholar.csv] (2026) Before Acting, Change the State: Prospective State Intervention for Web Agents under Deceptive Interfaces
+- [population_b_semantic_scholar.csv] (2026) CUA-Universe: A Scalable and Dynamic Environment for Hybrid GUI+CLI Agents
+- [population_b_semantic_scholar.csv] (2026) PastForward: Faster On-Device GUI Agents via Computational Experience Reuse
+- [population_b_semantic_scholar.csv] (2026) OS-Helix: Unifying GUI Interaction and Code Execution in Native Computer-Using Agents
+- [population_b_semantic_scholar.csv] (2026) SkillLens: Visual Skill Cards for Retrieval-Augmented GUI Action Prediction and On-Policy Distillation
+- [population_b_semantic_scholar.csv] (2026) MintAct: A Unified Visual Agent for Digital Environments
+- [population_b_semantic_scholar.csv] (2026) OpenMobile-2: Building Versatile Mobile Agents with Scalable Environments and App-Native Tools
+- [population_b_semantic_scholar.csv] (2026) LongHorizon-Harness: Advancing Long-Horizon Agents for Real-World Tasks
+- [population_b_semantic_scholar.csv] (2026) ComponentBench: Diagnosing Component-Level Failures in Computer-Use Agents
+- [population_b_semantic_scholar.csv] (2026) CONTRAMEM: Learning Self-Evolving Procedural Memory from Contrasting Multi-Model Trajectories
+- [population_b_semantic_scholar.csv] (2026) REBASE: Device-Cloud Experience Coherence for GUI Agents Across App Updates
+- [population_b_semantic_scholar.csv] (2026) PhoneWorld: From Real-App Trajectories to Dynamic and Verifiable Environments for Phone-Use Agents
+- [population_b_semantic_scholar.csv] (2026) Can LLMs Fix It Without Code? Toward Automated Verification of No-Code Bug Fixes
+- [population_b_semantic_scholar.csv] (2025) VeriWeb: Verifiable Long-Chain Web Benchmark for Agentic Information-Seeking
+- [population_b_semantic_scholar.csv] (2026) CaptchaArena: A Large-Scale, Fine-Grained Dataset for Training Computer-Use Agents on Interactive CAPTCHAs
+- [population_b_semantic_scholar.csv] (2026) CLIFT: Conformal Self-Verification for Web Agent Training and Test-Time Scaling
+- [population_b_semantic_scholar.csv] (2026) GUITAR: Structured Failure Diagnosis of GUI Agents via State Transitions
+- [population_b_semantic_scholar.csv] (2026) Interaction-as-a-Judge
+- [population_b_semantic_scholar.csv] (2025) Mano Technical Report
+- [population_b_semantic_scholar.csv] (2026) When Faster Decisions Do Not Make Better Agents: An Empirical Study of Jev in Agent Workflows
+- [population_b_semantic_scholar.csv] (2026) Neuro-Symbolic Computer Use: Learning Reusable Policies for Reliable and Efficient Execution
+- [population_b_semantic_scholar.csv] (2026) Efficient GUI Agents: A Systems Survey of Observation, Memory, Action, and Runtime Optimization
+- [population_b_semantic_scholar.csv] (2025) VerificAgent: Domain-Specific Memory Verification for Scalable Oversight of Aligned Computer-Use Agents
+- [population_b_semantic_scholar.csv] (2026) CausalCache: Conditional High-Fidelity Restoration for Long-Horizon GUI Agents
+- [population_b_semantic_scholar.csv] (2026) AdvSim2Real : Training Web Agents Against Adaptive Prompt Injection in a Web World Model
+- [population_b_semantic_scholar.csv] (2026) MemGuard: Persisting Verifier Signals for LLM-Agent Memory Governance
+- [population_b_semantic_scholar.csv] (2026) SoftwareGym: Scaling Computer-Use Agent Training with Diverse Synthesized Software Environments
+- [population_b_semantic_scholar.csv] (2026) WebRider: Persona-Conditioned Intent Controllers for Live-Web Assistance
+- [population_b_semantic_scholar.csv] (2026) Do GUI Agents Know When Not to Act? Enabling Conflict-Aware Termination for Multimodal GUI Agents
+- [population_b_semantic_scholar.csv] (2026) Agentic Reward Modeling: Verifying GUI Agent via Progressive Trajectory-Grounded Interaction
+- [population_b_semantic_scholar.csv] (2026) DeltaReplay: Task-Relative Memory Reuse for Mobile GUI Agents
+- [population_b_semantic_scholar.csv] (2026) How To Train Your World Model: Fine-tuning vs RAG for LM-based World Modeling
+- [population_b_semantic_scholar.csv] (2026) Grow the Harness, Not the Context: From Strategy-Free Scaffolds to Reusable Specialist Agents
+- [population_b_semantic_scholar.csv] (2026) MHVF: Training-Free GUI Grounding via Verification-Guided Multi-Hypothesis Search
+- [population_b_semantic_scholar.csv] (2026) Task-Adaptive Rubrics for GUI Reward Modeling
+- [population_b_semantic_scholar.csv] (2026) GUI-CC: Benchmarking Contextual Consistency of GUI World Models as Agent Environments
+- [population_b_semantic_scholar.csv] (2026) One Rollout Is All You Get: Fully Test-Time Adaptation for GUI Agents
+- [population_b_semantic_scholar.csv] (2026) WebGrader: Training LLMs for Web Development with Self-Evolving Programmatic Grader
+- [population_b_semantic_scholar.csv] (2026) Towards Safe Autonomy for Computer Use
+- [population_b_semantic_scholar.csv] (2026) HybridCUA: Learning to Orchestrate GUI and CLI for Computer-Use Agents
+- [population_b_semantic_scholar.csv] (2026) PhoneCLI: From App Interfaces to Callable Commands for Mobile Agents
+- [population_b_semantic_scholar.csv] (2026) PrecogUI: Proactive GUI Agents via Pre-cognitive Simulation and Experience Retrieval
+- [population_b_semantic_scholar.csv] (2026) Beyond Retrieval: Query-Conditioned Reuse of Long-Horizon Agent Trajectories
+- [population_b_semantic_scholar.csv] (2026) GUI-HARVEST: Self-Improving GUI Agents through Evidence-Driven Harness Evolution
+- [population_b_semantic_scholar.csv] (2026) SEPM: Self-Evolving Procedural Memory Grounded in Task Graphs for Multi-Agent Collaboration
+- [population_b_semantic_scholar.csv] (2026) Discriminative World Models for Web Agents
+- [population_b_semantic_scholar.csv] (2026) The GUI Is Not the State: Diagnosing State Aliasing in GUI World Models
+- [population_b_semantic_scholar.csv] (2026) Auditing Web Agent Evaluation on WebArena-Lite: Human Review of Outcomes and Trajectories
+- [population_b_semantic_scholar.csv] (2025) Robust, Observable, and Evolvable Agentic Systems Engineering: A Principled Framework Validated via the Fairy 
+- [population_b_semantic_scholar.csv] (2026) Imagine to Act: High-Fidelity Data Synthesis via Image Editing World Model for Scalable GUI Agent Training
+- [population_b_semantic_scholar.csv] (2026) MAI-Gym: An Open All-in-One Platform for GUI Agent Evaluation and RL Training across Mobile and Computer Envir
+- [population_b_semantic_scholar.csv] (2026) RecreationWorld: Scalable and Verifiable Environments for Hybrid Computer-Use Agents
+- [population_b_semantic_scholar.csv] (2026) Right Screen, Wrong Transition: World Models as Verifiers for GUI Agents
+- [population_b_semantic_scholar.csv] (2026) UI-Mate: Advancing Open-Weight Foundation GUI Agents with In-Context Demonstrations
+- [population_b_semantic_scholar.csv] (2021) Application of Chatbot Technology in the Study of the Discipline «Quality Management» *
+- [population_b_semantic_scholar.csv] (2026) Task-State Governance: A Virtual Machine for Verifiable and Recoverable GUI Agent Execution
 
 B: duplicate DOI values removed within B (occurrences):
 1. 10.1007/978-3-032-37595-7_36 (x2)
