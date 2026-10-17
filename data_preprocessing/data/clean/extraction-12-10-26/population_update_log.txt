@@ -1,5 +1,5 @@
 POPULATION UPDATE LOG - extraction-12-10-26
-Timestamp: 2026-10-12T19:31:18.269081Z
+Timestamp: 2026-10-17T10:22:24.596085Z
 Old population: ..\population_11_10_26.csv
 
 SUMMARY
@@ -42,6 +42,73 @@ B raw rows per file: {'population_b_acm.bib': 9, 'population_b_ieee_run_1.csv': 
 A rows added per source (first-seen): {'population_a_update_acm_2025.bib': 29, 'population_a_update_acm_2026.bib': 317, 'population_a_update_ieee_2025_only.csv': 545, 'population_a_update_ieee_2026_only.csv': 893, 'population_a_update_scopus_2025_only.csv': 22, 'population_a_update_scopus_2026_only.csv': 73}
 B rows added per source (first-seen): {'population_b_acm.bib': 7, 'population_b_ieee_run_1.csv': 1, 'population_b_ieee_run_3.csv': 5, 'population_b_ieee_run_4.csv': 17, 'population_b_ieee_run_5.csv': 2, 'population_b_ieee_run_6.csv': 2, 'population_b_scopus.csv': 63, 'population_b_semantic_scholar.csv': 346}
 A update by year: {2025: 592, 2026: 1287}
+
+ORIGINAL EXPORT (comparison base)
+Folder: data\raw\extraction-26-11-25
+Raw rows per database: scopus=98, ieee=696, acm=298
+Old population rows: 1091  vs original export rows: 1092
+Old population = complete original export (same DOI multiset, nulls/dups included): NO
+  DOIs only in original export (0): (none)
+  DOIs only in old population (64): ['10.1145/3728725.3728759', '10.1145/3757110.3757143', '10.5555/3378680.3378739', '10.5555/3382225.3382387', '10.5555/3398761.3398771', '10.5555/3398761.3398896', '10.5555/3398761.3399115', '10.5555/3400397.3400437', '10.5555/3400397.3400507', '10.5555/3400397.3400605', '10.5555/3437539.3437619', '10.5555/3437539.3437794', '10.5555/3463952.3463967', '10.5555/3463952.3464007', '10.5555/3463952.3464034', '10.5555/3463952.3464044', '10.5555/3463952.3464093', '10.5555/3463952.3464115', '10.5555/3466184.3466303', '10.5555/3522802.3522882', '10.5555/3523760.3523782', '10.5555/3523760.3523794', '10.5555/3535850.3535884', '10.5555/3535850.3535914', '10.5555/3535850.3535953', '10.5555/3535850.3535964', '10.5555/3535850.3535982', '10.5555/3535850.3535992', '10.5555/3535850.3535998', '10.5555/3545946.3598760', '10.5555/3545946.3598826', '10.5555/3545946.3598838', '10.5555/3546258.3546359', '10.5555/3581644.3581718', '10.5555/3635637.3662854', '10.5555/3635637.3662884', '10.5555/3635637.3662921', '10.5555/3635637.3662942', '10.5555/3635637.3662981', '10.5555/3635637.3663023', '10.5555/3635637.3663033', '10.5555/3635637.3663048', '10.5555/3635637.3663063', '10.5555/3635637.3663074', '10.5555/3635637.3663257', '10.5555/3643142.3643315', '10.5555/3648699.3649067', '10.5555/3709347.3743552', '10.5555/3709347.3743563', '10.5555/3709347.3743564', '10.5555/3709347.3743782', '10.5555/3709347.3743788', '10.5555/3709347.3743808', '10.5555/3709347.3743817', '10.5555/3709347.3743841', '10.5555/3709347.3744035', '10.5555/3709347.3744038', '10.5555/3709347.3744045', '10.5555/3709347.3744089', '10.5555/3712729.3712749', '10.5555/3712729.3712829', '10.5555/3716662.3716760', '10.5555/3721488.3721623', '10.5555/3721488.3721763']
+  -> A is compared against every record of the original search, incl. those excluded at screening.
+
+POPULATION A: PER-DATABASE BREAKDOWN
+raw=rows in export files | nullDOI=dropped, no doi field/value
+yearDrop=year<2025 | kept=with DOI and year ok | uniqInDB=unique DOIs within that db (before cross-db dedup)
+firstSeen=unique after cross-db dedup (attributed to first file read: acm, ieee, scopus) | inOld=already in old population
+
+    db   raw  nullDOI  yearDrop  kept  uniqInDB  firstSeen  inOld  add2025  add>2025  added
+scopus   173        6         0   167       163        121     26       22        73     95
+  ieee  1662       17         0  1645      1645       1645    207      545       893   1438
+   acm   460       28         0   432       432        432     86       25       321    346
+ TOTAL  2295       51         0  2244      2240       2198    319      592      1287   1879
+Cross-database duplicates within A (DOI found in several dbs): {'acm+scopus': 13, 'ieee+scopus': 29}
+
+OVERLAP WITH ORIGINAL EXPORT: (original_db, new_db) = N   [total 319]
+first-seen new db (sums to the overlap total):
+  ((not in orig export), acm) = 2
+  (acm, acm) = 83
+  (ieee, acm) = 1
+  (ieee, ieee) = 203
+  (ieee+scopus, ieee) = 4
+  (scopus, scopus) = 26
+full membership (every db the DOI appears in, both sides):
+  ((not in orig export), acm) = 2
+  (acm, acm) = 82
+  (acm, acm+scopus) = 1
+  (ieee, acm) = 1
+  (ieee, ieee) = 200
+  (ieee, ieee+scopus) = 3
+  (ieee+scopus, ieee+scopus) = 4
+  (scopus, scopus) = 26
+overlap by new db and year: {('acm', 2025): 83, ('acm', 2026): 3, ('ieee', 2025): 206, ('ieee', 2026): 1, ('scopus', 2025): 24, ('scopus', 2026): 2}
+
+CONSISTENCY CHECKS (A vs original)
+DOI comparison rule, both sides: strip + lowercase (+ doi.org/doi: prefix removal; none present)
+DOI format audit (raw strings):
+  original scopus  n=98 null=17 whitespace=0 uppercase=38 url/doi:-prefix=0 not-starting-10.=0
+  original ieee    n=696 null=7 whitespace=0 uppercase=681 url/doi:-prefix=0 not-starting-10.=0
+  original acm     n=298 null=66 whitespace=0 uppercase=5 url/doi:-prefix=0 not-starting-10.=0
+  update   scopus  n=173 null=6 whitespace=0 uppercase=82 url/doi:-prefix=0 not-starting-10.=0
+  update   ieee    n=1662 null=17 whitespace=0 uppercase=1628 url/doi:-prefix=0 not-starting-10.=0
+  update   acm     n=460 null=28 whitespace=0 uppercase=18 url/doi:-prefix=0 not-starting-10.=0
+  old population  n=1091 null=24 whitespace=0 uppercase=724 url/doi:-prefix=0 not-starting-10.=0
+Added rows whose normalised TITLE is in the original export (possible DOI mismatch): 2
+  - [ieee] (2025) 10.1109/rcsm67767.2025.11507473  Agentic AI: A Paradigm Shift in Autonomous Decision-Making and Intelligent Systems
+  - [scopus] (2025) 10.18653/v1/2025.acl-long.1127  DRAE: Dynamic Retrieval-Augmented Expert Networks for Lifelong Learning and Task Adaptatio
+Null-DOI A rows (dropped) whose title is in the original export: 20 of 51
+Year filter: original export years are set by the query; update files are split per year (2025 / 2026) and filtered year>=2025. Update years per db: {('acm', 2025): 125, ('acm', 2026): 334, ('acm', None): 1, ('ieee', 2025): 753, ('ieee', 2026): 909, ('scopus', 2025): 68, ('scopus', 2026): 105}
+
+IEEE 2025 records by 'Date Added To Xplore' vs original search date 2025-11-26 (latest date in original export: 2025-11-24)
+  in old | added BEFORE orig search: 206
+  new    | added BEFORE orig search: 204
+  new    | added ON/AFTER orig search: 338
+  new    | no date: 3
+  'new' + 'BEFORE' = records in Xplore at search time but not returned then (same query string):
+  most likely metadata enriched after the original search (index terms added later); not verifiable here.
+IEEE content types, original: {'IEEE Conferences': 505, 'IEEE Journals': 183, 'IET Conferences': 3, 'VDE Conferences': 3, 'TUP Journals': 1, 'FRPS Journals': 1}
+IEEE content types, update:   {'IEEE Conferences': 1232, 'IEEE Journals': 375, 'IET Conferences': 13, 'IEEE Magazines': 10, 'Additional Conference Content Conferences': 9, 'VDE Conferences': 5, 'Packt Publishing eBooks': 4, 'TUP Journals': 3, 'IEEE Early Access Articles': 2, 'Manning eBooks': 2, 'Wiley Aerospace and Automotive eBook Chapters': 2, 'MIT Press Journals': 1, 'IEEE Standards': 1, 'Wiley Data and Cybersecurity eBook Chapters': 1, 'ZUP Journals': 1, 'SGEPRI Journals': 1}
+IEEE content types of new 2025 records added BEFORE orig search: {'IEEE Conferences': 125, 'IEEE Journals': 66, 'IEEE Magazines': 10, 'MIT Press Journals': 1, 'IET Conferences': 1, 'IEEE Standards': 1}
 
 DETAILS
 A: missing DOIs (all years; year shown):

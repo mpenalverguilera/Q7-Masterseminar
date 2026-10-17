@@ -152,17 +152,32 @@ def merge_folder(folder_name: str) -> pd.DataFrame:
 
     # Sort by DOI (case-insensitive), NA last
     if "DOI" in merged.columns:
-        try:
-            merged = merged.sort_values(
-                by="DOI",
-                key=lambda s: s.fillna("").astype(str).str.lower(),
-                na_position="last",
-                kind="mergesort",
-            ).reset_index(drop=True)
-        except TypeError:
-            merged = merged.sort_values(by="DOI", na_position="last", kind="mergesort").reset_index(drop=True)
+        merged = sort_by_doi(merged)
 
     return merged
+
+
+def sort_by_doi(df: pd.DataFrame) -> pd.DataFrame:
+    """Sort rows by DOI (case-insensitive, stable), NA last."""
+    try:
+        return df.sort_values(
+            by="DOI",
+            key=lambda s: s.fillna("").astype(str).str.lower(),
+            na_position="last",
+            kind="mergesort",
+        ).reset_index(drop=True)
+    except TypeError:
+        return df.sort_values(by="DOI", na_position="last", kind="mergesort").reset_index(drop=True)
+
+
+def doi_null_mask(doi_series: pd.Series) -> pd.Series:
+    """True where the DOI is null/empty."""
+    return doi_series.isna() | (doi_series.astype(str).str.strip() == "")
+
+
+def normalize_doi(doi_series: pd.Series) -> pd.Series:
+    """DOI key used for counting/deduplication: stripped + lowercased."""
+    return doi_series.astype(str).str.strip().str.lower()
 
 
 def analyze_and_clean(merged: pd.DataFrame, folder_name: str):
@@ -173,12 +188,12 @@ def analyze_and_clean(merged: pd.DataFrame, folder_name: str):
     # Normalize DOI strings for counting/deduplication
     doi_series = merged["DOI"].astype(object)
     # Count null/empty DOIs
-    is_null_like = doi_series.isna() | (doi_series.astype(str).str.strip() == "")
+    is_null_like = doi_null_mask(doi_series)
     null_doi_count = int(is_null_like.sum())
 
     # Non-null DOIs (as normalized lower-case strings)
     non_null_mask = ~is_null_like
-    non_null = doi_series[non_null_mask].astype(str).str.strip().str.lower()
+    non_null = normalize_doi(doi_series[non_null_mask])
 
     # Count duplicates among non-null DOIs
     dup_counts = non_null.value_counts()
@@ -188,7 +203,7 @@ def analyze_and_clean(merged: pd.DataFrame, folder_name: str):
     # Build cleaned DataFrame: remove rows with null/empty DOI, drop duplicates (keep first)
     cleaned = merged[non_null_mask].copy()
     # create DOI_normalized for deduplication
-    cleaned["DOI_normalized"] = cleaned["DOI"].astype(str).str.strip().str.lower()
+    cleaned["DOI_normalized"] = normalize_doi(cleaned["DOI"])
     cleaned = cleaned[~cleaned["DOI_normalized"].duplicated(keep='first')].copy()
     cleaned = cleaned.drop(columns=["DOI_normalized"])
 

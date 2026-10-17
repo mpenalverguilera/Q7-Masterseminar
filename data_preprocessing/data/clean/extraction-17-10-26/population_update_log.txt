@@ -1,0 +1,939 @@
+POPULATION UPDATE LOG - extraction-17-10-26
+Timestamp: 2026-10-17T11:03:04.384763Z
+Old population: ..\population_11_10_26.csv
+
+SUMMARY
+Old population rows:                                   1091
+Current population rows (final):                       3425
+Net new entries (new_entries.csv):                     2334
+
+POPULATION A UPDATE
+Raw rows (all A files):                                2303
+Missing/null DOIs (all years):                         45  (of which year>=2025: 45)
+Dropped by year filter (< 2025 or no year):             0
+Rows kept (year>=2025, with DOI):                    2258
+Duplicate removals by DOI within A:                    46  (44 DOI values)
+Unique A rows (year>=2025):                          2212
+  already in old population (overlap, not re-added):   319
+  added to population A (not in old):                  1893
+Missing 2025 entries added (2025, not in old):         581
+New entries added for >=2025 total:                    1893  (2025: 581, >2025: 1312)
+
+POPULATION B
+Raw rows (all B files):                                599
+Missing/null DOIs:                                     121
+Duplicate removals by DOI within B:                    28  (21 DOI values)
+Unique B rows (population_b.csv):                      450
+  already in old population:                           1
+  already in A update:                                 8
+  added to current population (new):                   441
+
+NEW ENTRIES BY ORIGIN
+A: 1893   B: 441
+
+EXTRA CHECKS
+Old population null DOIs: 24; internal duplicate DOIs: 15 (old rows kept as-is in current_population)
+A rows missing title/abstract: 0/0
+B rows missing title/abstract: 349/8
+A raw rows per file: {'population_a_update_acm_2025_bib_converted.csv': 130, 'population_a_update_acm_2026_bib_converted.csv': 333, 'population_a_update_ieee_2025_only.csv': 738, 'population_a_update_ieee_2026_only.csv': 934, 'population_a_update_scopus_2025_only.csv': 67, 'population_a_update_scopus_2026_only.csv': 101}
+B raw rows per file: {'population_b_acm_bib_converted.csv': 9, 'population_b_ieee_run_1.csv': 2, 'population_b_ieee_run_3.csv': 5, 'population_b_ieee_run_4.csv': 17, 'population_b_ieee_run_5.csv': 2, 'population_b_ieee_run_6.csv': 4, 'population_b_scopus.csv': 90, 'population_b_semantic_scholar.csv': 470}
+A rows added per source (first-seen): {'population_a_update_scopus_2026_only.csv': 69, 'population_a_update_scopus_2025_only.csv': 21, 'population_a_update_ieee_2025_only.csv': 531, 'population_a_update_ieee_2026_only.csv': 923, 'population_a_update_acm_2025_bib_converted.csv': 29, 'population_a_update_acm_2026_bib_converted.csv': 320}
+B rows added per source (first-seen): {'population_b_scopus.csv': 60, 'population_b_semantic_scholar.csv': 347, 'population_b_ieee_run_4.csv': 17, 'population_b_ieee_run_3.csv': 5, 'population_b_ieee_run_5.csv': 2, 'population_b_ieee_run_1.csv': 1, 'population_b_ieee_run_6.csv': 2, 'population_b_acm_bib_converted.csv': 7}
+A update by year: {2025: 581, 2026: 1305, 2027: 7}
+
+ORIGINAL EXPORT (comparison base)
+Folder: data\raw\extraction-26-11-25  files: {'acm_bib_converted.csv': 297, 'iee.csv': 696, 'scopus.csv': 98}
+Rows per database: scopus=98, ieee=696, acm=297
+  acm.bib: 298 @entries in .bib (converted csv is the source used)
+Old population rows: 1091  vs original export rows: 1091
+Old population = complete original export (same DOI multiset, nulls/dups included): YES
+  DOIs only in original export (0): (none)
+  DOIs only in old population (0): (none)
+  -> A is compared against every record of the original search, incl. those excluded at screening.
+
+POPULATION A: PER-DATABASE BREAKDOWN
+raw=rows in export files (acm: rows of *_bib_converted.csv) | nullDOI=dropped, clean_data.doi_null_mask
+yearDrop=year<2025 | kept=with DOI and year ok | uniqInDB=unique DOIs within that db (before cross-db dedup)
+firstSeen=unique after cross-db dedup (first row in clean_data DOI sort order) | inOld=already in old population
+
+    db   raw  nullDOI  yearDrop  kept  uniqInDB  firstSeen  inOld  add2025  add>2025  added
+scopus   168        6         0   162       158        116     26       21        69     90
+  ieee  1672       11         0  1661      1661       1661    207      531       923   1454
+   acm   463       28         0   435       435        435     86       29       320    349
+ TOTAL  2303       45         0  2258      2254       2212    319      581      1312   1893
+Cross-database duplicates within A (DOI found in several dbs): {'acm+scopus': 13, 'ieee+scopus': 29}
+
+OVERLAP WITH ORIGINAL EXPORT: (original_db, new_db) = N   [total 319]
+first-seen new db (sums to the overlap total):
+  (acm, acm) = 85
+  (acm+ieee, acm) = 1
+  (ieee, ieee) = 203
+  (ieee+scopus, ieee) = 4
+  (scopus, scopus) = 26
+full membership (every db the DOI appears in, both sides):
+  (acm, acm) = 84
+  (acm, acm+scopus) = 1
+  (acm+ieee, acm) = 1
+  (ieee, ieee) = 200
+  (ieee, ieee+scopus) = 3
+  (ieee+scopus, ieee+scopus) = 4
+  (scopus, scopus) = 26
+overlap by new db and year: {('acm', 2025): 83, ('acm', 2026): 3, ('ieee', 2025): 206, ('ieee', 2026): 1, ('scopus', 2025): 24, ('scopus', 2026): 2}
+
+CONSISTENCY CHECKS (A vs original)
+DOI rule, all sides (original export, old population, update): imported from clean_data.py
+  read_csv_flexible + map_and_select, null = doi_null_mask, key = normalize_doi (strip + lower),
+  order = sort_by_doi, keep first; .bib via convert_bib_to_csvs (entry.get('doi'))
+DOI format audit (values as read):
+  original scopus  n=98 null=17 whitespace=0 uppercase=38 url/doi:-prefix=0 not-starting-10.=0
+  original ieee    n=696 null=7 whitespace=0 uppercase=681 url/doi:-prefix=0 not-starting-10.=0
+  original acm     n=297 null=0 whitespace=0 uppercase=5 url/doi:-prefix=0 not-starting-10.=0
+  update   scopus  n=168 null=6 whitespace=0 uppercase=82 url/doi:-prefix=0 not-starting-10.=0
+  update   ieee    n=1672 null=11 whitespace=0 uppercase=1647 url/doi:-prefix=0 not-starting-10.=0
+  update   acm     n=463 null=28 whitespace=0 uppercase=9 url/doi:-prefix=0 not-starting-10.=0
+  old population  n=1091 null=24 whitespace=0 uppercase=724 url/doi:-prefix=0 not-starting-10.=0
+Rows with empty title (map_and_select only matches a 'document title' column): original scopus=0, original ieee=0, original acm=0 | update scopus=0, update ieee=0, update acm=0
+  population_a_update_acm_2025.bib: 130 @entries in .bib, 130 rows after convert_bib_to_csvs
+  population_a_update_acm_2026.bib: 333 @entries in .bib, 333 rows after convert_bib_to_csvs
+Added rows whose normalised TITLE is in the original export (possible DOI mismatch): 2
+  - [ieee] (2025) 10.1109/rcsm67767.2025.11507473  Agentic AI: A Paradigm Shift in Autonomous Decision-Making and Intelligent Systems
+  - [scopus] (2025) 10.18653/v1/2025.acl-long.1127  DRAE: Dynamic Retrieval-Augmented Expert Networks for Lifelong Learning and Task Adaptatio
+Null-DOI A rows (dropped) whose title is in the original export: 20 of 45
+Year filter: original export years are set by the query; update files are split per year (2025 / 2026) and filtered year>=2025 (year column, else file name). Update years per db: {('acm', 2025): 130, ('acm', 2026): 333, ('ieee', 2025): 738, ('ieee', 2026): 934, ('scopus', 2025): 67, ('scopus', 2026): 94, ('scopus', 2027): 7}
+
+IEEE 2025 records by 'Date Added To Xplore' vs original search date 2025-11-26 (latest date in original export: 2025-11-24)
+  in old | added BEFORE orig search: 206
+  new    | added BEFORE orig search: 193
+  new    | added ON/AFTER orig search: 338
+  'new' + 'BEFORE' = records in Xplore at search time but not returned then (same query string):
+  most likely metadata enriched after the original search (index terms added later); not verifiable here.
+IEEE content types, original: {'IEEE Conferences': 505, 'IEEE Journals': 183, 'IET Conferences': 3, 'VDE Conferences': 3, 'TUP Journals': 1, 'FRPS Journals': 1}
+IEEE content types, update:   {'IEEE Conferences': 1258, 'IEEE Journals': 381, 'IET Conferences': 13, 'Additional Conference Content Conferences': 9, 'VDE Conferences': 5, 'TUP Journals': 3, 'MIT Press Journals': 1, 'ZUP Journals': 1, 'SGEPRI Journals': 1}
+IEEE content types of new 2025 records added BEFORE orig search: {'IEEE Conferences': 125, 'IEEE Journals': 66, 'MIT Press Journals': 1, 'IET Conferences': 1}
+
+DETAILS
+A: missing DOIs (all years; year shown):
+- [population_a_update_acm_2025_bib_converted.csv] (2025) The Next Level of Long-Term Agent Autonomy -- Proactively Acquiring Knowledge and Abilities
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Planning, Scheduling, and Execution on the Moon: The CADRE Technology Demonstration Mission
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Generalised BDI Planning
+- [population_a_update_acm_2025_bib_converted.csv] (2025) SmartPilot:Agent-Based CoPilot for Intelligent Manufacturing
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Grounding Agent Reasoning in Image Schemas: A Neurosymbolic Approach to Embodied Cognition
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Logic of Knowledge and Cognitive Ability
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Feature Engineering for Agents: An Adaptive Cognitive Architecture for Interpretable ML Monitoring
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Azorus: Commitments over Protocols for BDI Agents
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Demonstration of an Open-source ROS 2 Framework and Simulator for Situated Interactive Social Robot
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Human-Agent Coordination in Games under Incomplete Information via Multi-Step Intent
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Gricean Norms as a Basis for Effective Collaboration
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Planning a Material Replenishment through Autonomous Mobile Robot in an Assembly Plant Using a Hybrid Simulati
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Responsible Autonomy for Hybrid Intelligence
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Personality-Driven Decision Making in LLM-Based Autonomous Agents
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Capabilities2 for ROS2: Advanced Skill-Based Control for Human-Robot Interaction
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Incorporating the Com-B Model for Behavior Change into an Agent-Based Model of Smoking Behaviors: An Object-Or
+- [population_a_update_acm_2025_bib_converted.csv] (2025) A Model- and Data-Agnostic Debiasing System for Achieving Equalized Odds
+- [population_a_update_acm_2025_bib_converted.csv] (2025) Demo: Human-in-the-Loop Agentic Reconfiguration of Edge 5G Networks via Dual-MCP and LLM Reasoning
+- [population_a_update_acm_2026_bib_converted.csv] (2026) Poster: ADN: Agent-Defined Networking
+- [population_a_update_acm_2026_bib_converted.csv] (2026) MIMIC-Py: An Extensible Tool for Personality-Driven Automated Game Testing with Large Language Models
+- [population_a_update_acm_2026_bib_converted.csv] (2026) Multi-Agent Control Planes for Quantum Networks: A Scalable Architecture for Autonomous Quantum Internet Manag
+- [population_a_update_acm_2026_bib_converted.csv] (2026) Holmes: Multimodal Agentic Diagnosis for Mixed-Language Mobile Crashes at Industrial Scale
+- [population_a_update_acm_2026_bib_converted.csv] (2026) RepLLM: Toward Automatically Reproducing Network Research Results
+- [population_a_update_acm_2026_bib_converted.csv] (2026) Bridging Design and Implementation: A Study of Multi-Agent LLM Architectures for Automated Front-End Generatio
+- [population_a_update_acm_2026_bib_converted.csv] (2026) Towards Self-Evolving Knowledge Systems: Enhancing Multimodal Agentic RAG with Hyperbolic Flows
+- [population_a_update_acm_2026_bib_converted.csv] (2026) RE-MMNAS: LLM Reasoning-Guided Evolutionary Architecture Search for Multi-Modal Feature Fusion
+- [population_a_update_acm_2026_bib_converted.csv] (2026) Self-Evolving Recommendation System: End-To-End Autonomous Model Optimization With LLM Agents
+- [population_a_update_acm_2026_bib_converted.csv] (2026) RTL-SMARTIE: An AI-Assisted Tutor for RTL Design Education
+- [population_a_update_ieee_2025_only.csv] (2025) An Innovative Smart Collection & Forwarding (SCF) Mechanism to Support Local Breakout Services in O-RAN-Based 
+- [population_a_update_ieee_2026_only.csv] (2026) Sequence Planning for Modular Robot Systems with BDI-supported Large Language Models
+- [population_a_update_ieee_2026_only.csv] (2026) Multi-Agent Reinforcement Learning based Adaptive PI Controller for Multivariable Process Control Applications
+- [population_a_update_ieee_2026_only.csv] (2026) Training Task Reasoning LLM Agents for Multi-turn Task Planning via Single-turn Reinforcement Learning
+- [population_a_update_ieee_2026_only.csv] (2026) LLM-Based Framework for Generation of Process Models
+- [population_a_update_ieee_2026_only.csv] (2026) From Unstructured Engineering Data to AAS-compliant Digital Twins: AAS-Consistent Output via the Engineering D
+- [population_a_update_ieee_2026_only.csv] (2026) Agent-in-the-Loop: Using AI Agents to Perform Control-Oriented Simulation Tasks
+- [population_a_update_ieee_2026_only.csv] (2026) Aligning LLMs with Human Comfort Preferences in Human-Robot Collaboration via Comfort-Guided Supervised Fine-T
+- [population_a_update_ieee_2026_only.csv] (2026) Autonomy Architectures for Safe Planning in Unknown Environments Under Budget Constraints
+- [population_a_update_ieee_2026_only.csv] (2026) Reinforcement Learning-Based Path Planning and Obstacle Avoidance Using PPO and B-Splines in Unknown Environme
+- [population_a_update_ieee_2026_only.csv] (2026) Multi-Stage Semantic Matching for Manufacturing Capability Discovery: A Latency- and Cost-Aware Architecture f
+- [population_a_update_scopus_2025_only.csv] (2025) Ontology-Guided Multi-Modal Perception for Trusted and Explainable Robotic Action
+- [population_a_update_scopus_2025_only.csv] (2025) LUMI Agents: A Fuzzy BDI Framework for Intelligent Agents
+- [population_a_update_scopus_2025_only.csv] (2025) JARVIS: A Neuro-Symbolic Commonsense Reasoning Framework for Conversational Embodied Agents
+- [population_a_update_scopus_2025_only.csv] (2025) Bayesian Inverse Physics for Neuro-Symbolic Robot Learning
+- [population_a_update_scopus_2025_only.csv] (2025) Generalised BDI Planning
+- [population_a_update_scopus_2025_only.csv] (2025) From Black Box to Data Contract: Engineering Accountable AI Agents with UpFormat
+
+A: rows dropped by year filter (0):
+
+A: duplicate DOI values removed within A (occurrences):
+1. 10.1109/aists66100.2025.11232814 (x2)
+2. 10.1109/asiancomnet68615.2025.11579693 (x2)
+3. 10.1109/case58245.2025.11164082 (x2)
+4. 10.1109/chase69719.2026.00067 (x2)
+5. 10.1109/cogsima68896.2026.11481226 (x2)
+6. 10.1109/comp-sif69752.2026.11481889 (x2)
+7. 10.1109/compsac69091.2026.00491 (x2)
+8. 10.1109/etfi68128.2026.11484746 (x2)
+9. 10.1109/hpsc69479.2026.00012 (x2)
+10. 10.1109/icaiqsa67794.2025.11440385 (x2)
+11. 10.1109/icccs69761.2026.11613233 (x2)
+12. 10.1109/iccitx70146.2026.11679896 (x2)
+13. 10.1109/icmlas67792.2026.11484017 (x2)
+14. 10.1109/icmlt65785.2025.11193354 (x2)
+15. 10.1109/iconat66879.2025.11362776 (x2)
+16. 10.1109/icra55743.2025.11127617 (x2)
+17. 10.1109/icra55743.2025.11127692 (x2)
+18. 10.1109/icra55743.2025.11128650 (x2)
+19. 10.1109/icsc67292.2026.00035 (x2)
+20. 10.1109/icws72778.2026.00168 (x2)
+21. 10.1109/ihcit66787.2025.11198926 (x2)
+22. 10.1109/iros60139.2025.11246211 (x2)
+23. 10.1109/lra.2026.3664616 (x2)
+24. 10.1109/melecon64486.2026.11418797 (x2)
+25. 10.1109/mi-sta68962.2026.11511331 (x2)
+26. 10.1109/otcon69332.2026.11629951 (x2)
+27. 10.1109/rcsm67767.2025.11507473 (x2)
+28. 10.1109/reacs67479.2025.11413437 (x2)
+29. 10.1109/smc58881.2025.11343694 (x2)
+30. 10.1145/3715316 (x2)
+31. 10.1145/3746252.3761057 (x2)
+32. 10.1145/3760250.3762235 (x2)
+33. 10.1145/3774904.3792406 (x2)
+34. 10.1145/3776734.3794387 (x2)
+35. 10.1145/3776734.3794399 (x2)
+36. 10.1145/3788910.3788948 (x2)
+37. 10.1145/3795154.3795236 (x2)
+38. 10.1145/3801228.3801318 (x2)
+39. 10.1145/3803291.3803324 (x2)
+40. 10.1145/3808338 (x2)
+41. 10.65109/jwph6906 (x3)
+42. 10.65109/pvri5073 (x2)
+43. 10.65109/trfj2704 (x3)
+44. 10.65109/zgrs2204 (x2)
+
+A: missing 2025 entries added (DOI):
+- 10.1007/s10958-025-08144-x
+- 10.1016/j.ifacol.2025.10.237
+- 10.1016/j.ifacol.2025.12.053
+- 10.1038/s41598-025-27076-9
+- 10.1049/icp.2024.2625
+- 10.1049/icp.2025.3169
+- 10.1049/icp.2025.4004
+- 10.1049/icp.2025.4436
+- 10.1109/aaac66612.2025.11427525
+- 10.1109/acait67930.2025.11522566
+- 10.1109/acait67930.2025.11522632
+- 10.1109/access.2024.3524586
+- 10.1109/access.2024.3524997
+- 10.1109/access.2025.3530391
+- 10.1109/access.2025.3540087
+- 10.1109/access.2025.3540487
+- 10.1109/access.2025.3591499
+- 10.1109/access.2025.3602471
+- 10.1109/access.2025.3618837
+- 10.1109/access.2025.3625646
+- 10.1109/access.2025.3642007
+- 10.1109/acdsa65407.2025.11165923
+- 10.1109/acet67282.2025.11430327
+- 10.1109/acira67680.2025.11334765
+- 10.1109/acira67680.2025.11334887
+- 10.1109/acira67680.2025.11335005
+- 10.1109/acit68900.2025.11510523
+- 10.1109/acoit66109.2025.11436949
+- 10.1109/actce66599.2025.00042
+- 10.1109/aecspe66597.2025.00162
+- 10.1109/aectsd65988.2025.11411236
+- 10.1109/aees66649.2025.11332536
+- 10.1109/aero63441.2025.11068527
+- 10.1109/aero63441.2025.11068694
+- 10.1109/aiac68175.2025.11332425
+- 10.1109/aiac68175.2025.11332516
+- 10.1109/aibdf67964.2025.11440916
+- 10.1109/aicconf64766.2025.11064062
+- 10.1109/aiccsa66935.2025.11315208
+- 10.1109/aiccsa66935.2025.11315472
+- 10.1109/aicsip65423.2025.11427213
+- 10.1109/aiesre67541.2025.11469873
+- 10.1109/aiiot65859.2025.11105239
+- 10.1109/aim64088.2025.11175878
+- 10.1109/aim64088.2025.11175898
+- 10.1109/aimla63829.2025.11040851
+- 10.1109/aimlsystems67835.2025.11331213
+- 10.1109/aiot66900.2025.00120
+- 10.1109/aiot66900.2025.00149
+- 10.1109/aiotc66747.2025.11198610
+- 10.1109/aisp68263.2025.11396217
+- 10.1109/aist68591.2025.11441571
+- 10.1109/aiware69974.2025.00008
+- 10.1109/amlds63918.2025.11159406
+- 10.1109/arso64737.2025.11124991
+- 10.1109/asiancomnet68615.2025.11579693
+- 10.1109/asyu67174.2025.11208457
+- 10.1109/auteee67053.2025.11321956
+- 10.1109/auteee67053.2025.11321958
+- 10.1109/automation66991.2025.11389874
+- 10.1109/automation66991.2025.11390021
+- 10.1109/bddm68348.2025.11442205
+- 10.1109/bigdata66926.2025.11400733
+- 10.1109/bigdata66926.2025.11400819
+- 10.1109/bigdata66926.2025.11401568
+- 10.1109/bigdata66926.2025.11402044
+- 10.1109/bigdata66926.2025.11402211
+- 10.1109/bigdata66926.2025.11402393
+- 10.1109/bigdata66926.2025.11478529
+- 10.1109/cac67268.2025.11486710
+- 10.1109/cac67268.2025.11487196
+- 10.1109/cac67268.2025.11487390
+- 10.1109/cac67268.2025.11487510
+- 10.1109/cac67268.2025.11487529
+- 10.1109/cacs67552.2025.11288169
+- 10.1109/cai64502.2025.00148
+- 10.1109/cai64502.2025.00237
+- 10.1109/caibda65784.2025.11182914
+- 10.1109/cait68620.2025.11424893
+- 10.1109/cars67163.2025.11337860
+- 10.1109/cars67163.2025.11337885
+- 10.1109/case58245.2025.11163771
+- 10.1109/case58245.2025.11164059
+- 10.1109/case58245.2025.11164114
+- 10.1109/case58245.2025.11164145
+- 10.1109/cbase67452.2025.11335519
+- 10.1109/cbs65871.2025.11267663
+- 10.1109/cenim67940.2025.11326408
+- 10.1109/cict67193.2025.11399067
+- 10.1109/cictn64563.2025.10932574
+- 10.1109/ciscon66933.2025.11337679
+- 10.1109/citce67565.2025.11360004
+- 10.1109/cloudcom67567.2025.11331416
+- 10.1109/codit66093.2025.11321908
+- 10.1109/coginfocom66819.2025.11200565
+- 10.1109/cogmi67134.2025.00013
+- 10.1109/commantel68363.2025.11368350
+- 10.1109/concapan66820.2025.11512419
+- 10.1109/conescapan67936.2025.11227172
+- 10.1109/cscn67557.2025.11230750
+- 10.1109/cscs66924.2025.00030
+- 10.1109/csitss67709.2025.11295343
+- 10.1109/csnt64827.2025.10967788
+- 10.1109/cvci66304.2025.11348198
+- 10.1109/cvpr52734.2025.00167
+- 10.1109/cvpr52734.2025.02703
+- 10.1109/dasa68193.2025.11498756
+- 10.1109/dcoss-iot65416.2025.00167
+- 10.1109/defi67526.2025.11551640
+- 10.1109/dese68208.2025.11367934
+- 10.1109/dsd67783.2025.00085
+- 10.1109/dsins68311.2025.11329861
+- 10.1109/dsis67228.2025.11390566
+- 10.1109/dsn-w65791.2025.00045
+- 10.1109/eccst68196.2025.11441180
+- 10.1109/ecmr65884.2025.11163001
+- 10.1109/edpee65754.2025.00078
+- 10.1109/eeeac66585.2025.11155682
+- 10.1109/ei268505.2025.11425142
+- 10.1109/embc58623.2025.11252790
+- 10.1109/embc58623.2025.11252910
+- 10.1109/emergin67762.2025.11450714
+- 10.1109/emergin67762.2025.11450758
+- 10.1109/eras63351.2025.11135703
+- 10.1109/esai67033.2025.11438748
+- 10.1109/escience65000.2025.00084
+- 10.1109/etcm67548.2025.11304436
+- 10.1109/etcom66606.2025.11436668
+- 10.1109/etcom66606.2025.11437335
+- 10.1109/etfa65518.2025.11205667
+- 10.1109/etfg61999.2025.11401151
+- 10.1109/fasta65681.2025.11138586
+- 10.1109/fie63693.2025.11328551
+- 10.1109/fllm67465.2025.11391213
+- 10.1109/fmlds67896.2025.00073
+- 10.1109/fuzz62266.2025.11197609
+- 10.1109/gcwkshps68340.2025.11591083
+- 10.1109/girst67753.2025.11382163
+- 10.1109/hnicem69498.2025.11569219
+- 10.1109/hpcc67675.2025.00218
+- 10.1109/hri61500.2025.10973938
+- 10.1109/i2cacis65476.2025.11100872
+- 10.1109/iaeac65194.2025.11166490
+- 10.1109/ic-eeta66496.2025.11548203
+- 10.1109/ic-eeta66496.2025.11548355
+- 10.1109/ic2nc67409.2025.11376534
+- 10.1109/ic2sdt68218.2025.11383730
+- 10.1109/ic_aset65966.2025.11232201
+- 10.1109/ica67499.2025.00013
+- 10.1109/ica67499.2025.00024
+- 10.1109/ica67499.2025.00030
+- 10.1109/ica67499.2025.00040
+- 10.1109/icaace65325.2025.11018964
+- 10.1109/icaace65325.2025.11018968
+- 10.1109/icaace65325.2025.11019221
+- 10.1109/icaace65325.2025.11019541
+- 10.1109/icaaid68975.2025.11358227
+- 10.1109/icacrs67045.2025.11324403
+- 10.1109/icaft66710.2025.11452704
+- 10.1109/icahn67688.2025.00014
+- 10.1109/icai67591.2025.11325079
+- 10.1109/icaibd64986.2025.11082076
+- 10.1109/icaiccit68829.2025.11434151
+- 10.1109/icaice68195.2025.11382306
+- 10.1109/icaice68195.2025.11382381
+- 10.1109/icaiqsa67794.2025.11440385
+- 10.1109/icaisd68166.2025.11385509
+- 10.1109/icamac67779.2025.11398733
+- 10.1109/icar65334.2025.11338643
+- 10.1109/icar65334.2025.11338654
+- 10.1109/icarm65671.2025.11293481
+- 10.1109/icarsc65809.2025.10970161
+- 10.1109/icat2i69744.2025.11472709
+- 10.1109/icat66432.2025.11189290
+- 10.1109/icbaie66852.2025.11326563
+- 10.1109/icbaie66852.2025.11326664
+- 10.1109/icbme68496.2025.11392511
+- 10.1109/icc-robins64345.2025.11086334
+- 10.1109/icca66035.2025.11430760
+- 10.1109/icca66035.2025.11430791
+- 10.1109/iccasit66611.2025.11348749
+- 10.1109/iccc68654.2025.11437910
+- 10.1109/iccect64621.2025.11339710
+- 10.1109/iccect64621.2025.11339729
+- 10.1109/icciaa65327.2025.11012990
+- 10.1109/iccist67338.2025.11438591
+- 10.1109/iccma67641.2025.11369543
+- 10.1109/iccma67641.2025.11369607
+- 10.1109/iccma67641.2025.11369630
+- 10.1109/iccpct65132.2025.11176525
+- 10.1109/iccr67607.2025.11372094
+- 10.1109/iccr67607.2025.11372111
+- 10.1109/iccr67607.2025.11372112
+- 10.1109/iccs67844.2025.11292384
+- 10.1109/iccsse67426.2025.11552497
+- 10.1109/iccsse67426.2025.11552565
+- 10.1109/iccta68914.2025.11519998
+- 10.1109/iccubea65967.2025.11284257
+- 10.1109/iccv51701.2025.01354
+- 10.1109/iccvit67848.2025.11391379
+- 10.1109/icdl63968.2025.11204399
+- 10.1109/icdmw69685.2025.00206
+- 10.1109/icdsca67083.2025.11349860
+- 10.1109/icdsca67083.2025.11350276
+- 10.1109/ice2cpt66440.2025.11340455
+- 10.1109/iceace67491.2025.11439273
+- 10.1109/iceace67491.2025.11439311
+- 10.1109/iceccme64568.2025.11277467
+- 10.1109/iceccme64568.2025.11277891
+- 10.1109/icecie66637.2025.11363832
+- 10.1109/icecmsn68058.2025.11383399
+- 10.1109/iceconf65644.2025.11379609
+- 10.1109/iceconf65644.2025.11379683
+- 10.1109/iceeng64546.2025.11031316
+- 10.1109/iceet67911.2025.11424040
+- 10.1109/icemce68156.2025.11466747
+- 10.1109/icemce68156.2025.11466816
+- 10.1109/icemce68156.2025.11467024
+- 10.1109/icepet65469.2025.11047291
+- 10.1109/icercs65898.2025.11580555
+- 10.1109/icercs65898.2025.11580934
+- 10.1109/icesa66763.2025.11281183
+- 10.1109/icest65883.2025.11428653
+- 10.1109/iceta67772.2025.11280218
+- 10.1109/icetc66579.2025.11387268
+- 10.1109/icetci64844.2025.11084099
+- 10.1109/iceteg66194.2025.11472810
+- 10.1109/iceteg66194.2025.11472936
+- 10.1109/ichora65333.2025.11017181
+- 10.1109/ichora65333.2025.11017298
+- 10.1109/ichst66555.2025.11428703
+- 10.1109/icia64617.2025.11277546
+- 10.1109/icicis65613.2025.11371170
+- 10.1109/icicr65456.2025.00104
+- 10.1109/iciibms66230.2025.11316762
+- 10.1109/iciibms66230.2025.11316765
+- 10.1109/icimia67127.2025.11200646
+- 10.1109/icir68135.2025.11361601
+- 10.1109/icirt66379.2025.11216726
+- 10.1109/iciscae66104.2025.11307245
+- 10.1109/iciscae66104.2025.11307337
+- 10.1109/iciscae66104.2025.11307690
+- 10.1109/icit63637.2025.10965318
+- 10.1109/iciteics64870.2025.11341483
+- 10.1109/icitr69413.2025.11353559
+- 10.1109/icma65362.2025.11120662
+- 10.1109/icmsci62561.2025.10893940
+- 10.1109/icmsci62561.2025.10894078
+- 10.1109/icmsci62561.2025.10894095
+- 10.1109/icmsci62561.2025.10894111
+- 10.1109/icmsci62561.2025.10894303
+- 10.1109/icmsci62561.2025.10894337
+- 10.1109/icmsci62561.2025.10894425
+- 10.1109/icmsci62561.2025.10894442
+- 10.1109/icmsci62561.2025.10894494
+- 10.1109/icmsci62561.2025.10894512
+- 10.1109/icmsci62561.2025.10894518
+- 10.1109/icmsci62561.2025.10894655
+- 10.1109/icmsp68723.2025.11407791
+- 10.1109/icmtae66890.2025.11428094
+- 10.1109/icncis67521.2025.11296095
+- 10.1109/icngn67480.2025.11413623
+- 10.1109/icnsc66229.2025.00017
+- 10.1109/icnsc66229.2025.00064
+- 10.1109/icoco67189.2025.11334120
+- 10.1109/icodse68111.2025.11351757
+- 10.1109/icoici65217.2025.11252860
+- 10.1109/iconat66879.2025.11362776
+- 10.1109/iconecct67014.2025.11469844
+- 10.1109/iconscept66142.2025.11436811
+- 10.1109/icorr66766.2025.11063007
+- 10.1109/icorr66766.2025.11063081
+- 10.1109/icos67841.2025.11371640
+- 10.1109/icosec67334.2025.11459812
+- 10.1109/icpcsn65854.2025.11035069
+- 10.1109/icpics66386.2025.11347323
+- 10.1109/icpics66386.2025.11347407
+- 10.1109/icra55743.2025.11127229
+- 10.1109/icra55743.2025.11127315
+- 10.1109/icra55743.2025.11127326
+- 10.1109/icra55743.2025.11127426
+- 10.1109/icra55743.2025.11127838
+- 10.1109/icra55743.2025.11127939
+- 10.1109/icra55743.2025.11128329
+- 10.1109/icra55743.2025.11128777
+- 10.1109/icrae67496.2025.00020
+- 10.1109/icras65818.2025.11108879
+- 10.1109/icrcv67407.2025.11349154
+- 10.1109/icrito66076.2025.11241792
+- 10.1109/icrm66809.2025.11349114
+- 10.1109/icrss67786.2025.00024
+- 10.1109/icrteect67512.2025.11448727
+- 10.1109/icrteect67512.2025.11448842
+- 10.1109/icsai68704.2025.11345853
+- 10.1109/icse68658.2025.11407580
+- 10.1109/icsece65727.2025.11256778
+- 10.1109/icsece65727.2025.11256924
+- 10.1109/icsgsc68313.2025.11288288
+- 10.1109/icsi64877.2025.11009828
+- 10.1109/icsit65336.2025.11295436
+- 10.1109/icsp65755.2025.11087140
+- 10.1109/icsps66615.2025.11347881
+- 10.1109/icsss66939.2025.11346119
+- 10.1109/icsss66939.2025.11346384
+- 10.1109/ictaect67351.2025.11391269
+- 10.1109/ictai66417.2025.00152
+- 10.1109/ictbig68706.2025.11323264
+- 10.1109/ictbig68706.2025.11323269
+- 10.1109/ictbig68706.2025.11323611
+- 10.1109/ictbig68706.2025.11323744
+- 10.1109/ictbig68706.2025.11323801
+- 10.1109/ictc66702.2025.11388383
+- 10.1109/icuas65942.2025.11007928
+- 10.1109/icufn65838.2025.11170054
+- 10.1109/icus66297.2025.11294344
+- 10.1109/icus66297.2025.11294460
+- 10.1109/icus66297.2025.11294663
+- 10.1109/icus66297.2025.11295219
+- 10.1109/icusac68314.2025.11414322
+- 10.1109/ieeeconf65522.2025.11136884
+- 10.1109/ieir67391.2025.11491406
+- 10.1109/ieir67391.2025.11491501
+- 10.1109/ietacs68750.2025.11385436
+- 10.1109/ietacs68750.2025.11385709
+- 10.1109/imra67474.2025.11512522
+- 10.1109/inmic65900.2025.11348372
+- 10.1109/inspire67328.2025.11300578
+- 10.1109/ipmml68499.2025.11407027
+- 10.1109/irac67707.2025.11381033
+- 10.1109/irac67707.2025.11381128
+- 10.1109/irce66030.2025.11203115
+- 10.1109/iros60139.2025.11245843
+- 10.1109/iros60139.2025.11245923
+- 10.1109/iros60139.2025.11246049
+- 10.1109/iros60139.2025.11246081
+- 10.1109/iros60139.2025.11246083
+- 10.1109/iros60139.2025.11246211
+- 10.1109/iros60139.2025.11246215
+- 10.1109/iros60139.2025.11246320
+- 10.1109/iros60139.2025.11246537
+- 10.1109/iros60139.2025.11246572
+- 10.1109/iros60139.2025.11246584
+- 10.1109/iros60139.2025.11246638
+- 10.1109/iros60139.2025.11246712
+- 10.1109/iros60139.2025.11246738
+- 10.1109/iros60139.2025.11246809
+- 10.1109/iros60139.2025.11246897
+- 10.1109/iros60139.2025.11246969
+- 10.1109/iros60139.2025.11247183
+- 10.1109/iros60139.2025.11247290
+- 10.1109/iros60139.2025.11247324
+- 10.1109/iros60139.2025.11247373
+- 10.1109/iros60139.2025.11247527
+- 10.1109/isads66912.2025.00024
+- 10.1109/isaect68904.2025.11318779
+- 10.1109/isaeece66033.2025.11159951
+- 10.1109/isceic67854.2025.11405500
+- 10.1109/iscid68789.2025.00044
+- 10.1109/iscipt67144.2025.11265096
+- 10.1109/ised67359.2025.11404913
+- 10.1109/ised67359.2025.11405305
+- 10.1109/isparo66239.2025.11436918
+- 10.1109/ispds67367.2025.11391239
+- 10.1109/isrimt67769.2025.11413029
+- 10.1109/issrew67781.2025.00067
+- 10.1109/isssc66652.2025.11387976
+- 10.1109/isstc67929.2025.11308635
+- 10.1109/itaic64559.2025.11162997
+- 10.1109/itaic64559.2025.11163295
+- 10.1109/itsc60802.2025.11423173
+- 10.1109/itsc60802.2025.11423211
+- 10.1109/itsc60802.2025.11423507
+- 10.1109/itsc60802.2025.11423548
+- 10.1109/itsc60802.2025.11423607
+- 10.1109/itsc60802.2025.11423726
+- 10.1109/iv64158.2025.11097371
+- 10.1109/jiot.2025.3542273
+- 10.1109/jiot.2025.3587737
+- 10.1109/jiot.2025.3589349
+- 10.1109/joe.2025.3529087
+- 10.1109/jproc.2025.3526887
+- 10.1109/lars69345.2025.11272961
+- 10.1109/lcsys.2025.3616827
+- 10.1109/lra.2024.3519888
+- 10.1109/lra.2025.3535185
+- 10.1109/lra.2025.3546091
+- 10.1109/lra.2025.3555149
+- 10.1109/lra.2025.3562005
+- 10.1109/lra.2025.3579205
+- 10.1109/lra.2025.3585393
+- 10.1109/lra.2025.3592138
+- 10.1109/lra.2025.3604741
+- 10.1109/lra.2025.3615026
+- 10.1109/mapcon65020.2025.11426198
+- 10.1109/mcte67374.2025.11213533
+- 10.1109/mcte67374.2025.11213821
+- 10.1109/memat68155.2025.11434396
+- 10.1109/metms65303.2025.11047623
+- 10.1109/mlise66443.2025.11100226
+- 10.1109/mrs66243.2025.11357260
+- 10.1109/mrs66243.2025.11357262
+- 10.1109/msnmc61130.2025.11399689
+- 10.1109/ner61569.2025.11588932
+- 10.1109/netps65392.2025.11102003
+- 10.1109/nfv-sdn66355.2025.11349644
+- 10.1109/nkcon66957.2025.11345759
+- 10.1109/oceans58557.2025.11104507
+- 10.1109/oceans58557.2025.11104557
+- 10.1109/oceans58557.2025.11104559
+- 10.1109/oceans58557.2025.11104649
+- 10.1109/peeec67807.2025.00109
+- 10.1109/picc67314.2025.11291255
+- 10.1109/pimrc62392.2025.11275264
+- 10.1109/posei67825.2025.11382258
+- 10.1109/prai67447.2025.11412526
+- 10.1109/punecon67554.2025.11378481
+- 10.1109/punecon67554.2025.11378482
+- 10.1109/qce65121.2025.20549
+- 10.1109/raai67517.2025.11423369
+- 10.1109/raai67517.2025.11423403
+- 10.1109/raai67517.2025.11423410
+- 10.1109/rasse64831.2025.11315436
+- 10.1109/rcae66389.2025.11355202
+- 10.1109/rcae66389.2025.11355259
+- 10.1109/rcae66389.2025.11355321
+- 10.1109/rcsm67767.2025.11507473
+- 10.1109/reacs67479.2025.11413437
+- 10.1109/ricai68060.2025.11384935
+- 10.1109/rivf68649.2025.11365091
+- 10.1109/ro-man63969.2025.11217737
+- 10.1109/ro-man63969.2025.11217885
+- 10.1109/robio66223.2025.11375952
+- 10.1109/robio66223.2025.11375966
+- 10.1109/robio66223.2025.11377152
+- 10.1109/robio66223.2025.11377185
+- 10.1109/robio66223.2025.11377267
+- 10.1109/robio66223.2025.11377393
+- 10.1109/robio66223.2025.11377493
+- 10.1109/robio66223.2025.11377701
+- 10.1109/robio66223.2025.11377839
+- 10.1109/robio66223.2025.11377868
+- 10.1109/robio66223.2025.11378300
+- 10.1109/roboticcc68732.2025.00016
+- 10.1109/roedunet68395.2025.11208465
+- 10.1109/rsae65932.2025.11488067
+- 10.1109/rsae65932.2025.11488159
+- 10.1109/saci66288.2025.11030183
+- 10.1109/saibot67519.2025.00015
+- 10.1109/sbr/wre66973.2025.11249510
+- 10.1109/sefet65155.2025.11255595
+- 10.1109/sibdata67295.2025.11428015
+- 10.1109/sii59315.2025.10871036
+- 10.1109/sii59315.2025.10871041
+- 10.1109/sita67914.2025.11273206
+- 10.1109/siu66497.2025.11111810
+- 10.1109/smc58881.2025.11342439
+- 10.1109/smc58881.2025.11342652
+- 10.1109/smc58881.2025.11343580
+- 10.1109/smc58881.2025.11343694
+- 10.1109/snams67467.2025.11391057
+- 10.1109/snpd65828.2025.11253286
+- 10.1109/sose66311.2025.11083807
+- 10.1109/ssitcon66133.2025.11342058
+- 10.1109/ssrr68451.2025.11391258
+- 10.1109/ssrr68451.2025.11391310
+- 10.1109/ssrr68451.2025.11391314
+- 10.1109/stpec66316.2025.11490732
+- 10.1109/stpec66316.2025.11490789
+- 10.1109/swc65939.2025.00247
+- 10.1109/tac.2024.3486648
+- 10.1109/tac.2025.3573251
+- 10.1109/tafe.2025.3528403
+- 10.1109/tase.2024.3421533
+- 10.1109/tase.2024.3513354
+- 10.1109/tase.2024.3514143
+- 10.1109/tase.2025.3574162
+- 10.1109/tase.2025.3579736
+- 10.1109/tase.2025.3580573
+- 10.1109/tase.2025.3585946
+- 10.1109/tase.2025.3592696
+- 10.1109/tase.2025.3595413
+- 10.1109/tase.2025.3606896
+- 10.1109/tase.2025.3607109
+- 10.1109/tase.2025.3607959
+- 10.1109/tccn.2024.3499357
+- 10.1109/tccn.2024.3522088
+- 10.1109/tcds.2024.3454240
+- 10.1109/tcds.2024.3480854
+- 10.1109/tcds.2025.3543364
+- 10.1109/tcds.2025.3551298
+- 10.1109/tcns.2025.3570454
+- 10.1109/tcsi.2025.3584353
+- 10.1109/tcss.2024.3502420
+- 10.1109/tele66816.2025.11212196
+- 10.1109/telecom66943.2025.11304042
+- 10.1109/telepresence66096.2025.11521559
+- 10.1109/tg.2025.3564042
+- 10.1109/thms.2025.3573243
+- 10.1109/tie.2024.3497300
+- 10.1109/tim.2025.3618740
+- 10.1109/tits.2025.3526827
+- 10.1109/tits.2025.3581701
+- 10.1109/tits.2025.3592741
+- 10.1109/tits.2025.3607312
+- 10.1109/tits.2025.3615073
+- 10.1109/tlt.2025.3561332
+- 10.1109/tmc.2024.3490545
+- 10.1109/tmech.2025.3532817
+- 10.1109/tmech.2025.3555814
+- 10.1109/tmech.2025.3580401
+- 10.1109/tro.2024.3507993
+- 10.1109/tro.2025.3567529
+- 10.1109/tro.2025.3593109
+- 10.1109/tro.2025.3598119
+- 10.1109/tro.2025.3603556
+- 10.1109/tro.2025.3605261
+- 10.1109/tro.2025.3613568
+- 10.1109/tro.2025.3626651
+- 10.1109/trustcom66490.2025.00393
+- 10.1109/tsg.2025.3578842
+- 10.1109/tsmc.2024.3490854
+- 10.1109/tsmc.2025.3575375
+- 10.1109/tvt.2025.3585270
+- 10.1109/twc.2025.3580400
+- 10.1109/upinlbs68186.2025.11468399
+- 10.1109/ur65550.2025.11078038
+- 10.1109/ur65550.2025.11078059
+- 10.1109/urtc68753.2025.11532975
+- 10.1109/visap.2025.00008
+- 10.1109/vtc2025-fall65116.2025.11310168
+- 10.1109/wcsp68525.2025.1010139
+- 10.1109/wcsp68525.2025.1010351
+- 10.1109/wcsp68525.2025.1010447
+- 10.1109/wf-pst65083.2025.00037
+- 10.1109/wintechcon66724.2025.11430100
+- 10.1109/wisee57913.2025.11229863
+- 10.1109/wpmc67460.2025.11351140
+- 10.1109/wsc68292.2025.11338974
+- 10.1109/wsc68292.2025.11339078
+- 10.1109/wsc68292.2025.11339127
+- 10.1109/yac66630.2025.11150039
+- 10.1145/3701551.3704124
+- 10.1145/3711708.3723442
+- 10.1145/3714394.3750599
+- 10.1145/3714394.3754433
+- 10.1145/3714394.3756185
+- 10.1145/3722212.3725122
+- 10.1145/3737900.3770174
+- 10.1145/3737904.3768530
+- 10.1145/3746252.3761471
+- 10.1145/3746252.3761640
+- 10.1145/3748636.3760462
+- 10.1145/3748636.3760463
+- 10.1145/3750069.3750098
+- 10.1145/3757377.3763849
+- 10.1145/3760250.3762235
+- 10.1145/3764687.3769950
+- 10.1145/3764912.3770819
+- 10.1145/3765612.3767229
+- 10.1145/3767695.3769486
+- 10.1145/3767695.3769488
+- 10.1145/3772429.3772444
+- 10.1145/3772429.3772497
+- 10.1145/3773365.3773367
+- 10.1145/3773365.3773429
+- 10.1145/3773365.3773503
+- 10.1145/3774900.3776635
+- 10.1145/3775073.3775211
+- 10.1145/3776759.3776802
+- 10.1145/3778534.3778661
+- 10.1162/neco_a_01761
+- 10.18653/v1/2025.acl-long.1127
+- 10.22323/1.488.0002
+- 10.23919/ccc64809.2025.11179042
+- 10.23919/ccc64809.2025.11179770
+- 10.23919/ecc65951.2025.11187026
+- 10.23919/iccas66577.2025.11301261
+- 10.23919/iccas66577.2025.11301388
+- 10.23919/sicefes67750.2025.11236593
+- 10.3390/a18110721
+- 10.34190/ecgbl.19.2.4140
+
+B: missing DOIs:
+- [population_b_scopus.csv] (2025) OSCAR: OPERATING SYSTEM CONTROL VIA STATE-AWARE REASONING AND RE-PLANNING Oscar
+- [population_b_scopus.csv] (2025) WEB AGENTS WITH WORLD MODELS: LEARNING AND LEVERAGING ENVIRONMENT DYNAMICS IN WEB NAVIGATION
+- [population_b_scopus.csv] (2025) WEB-SHEPHERD: Advancing PRMs for Reinforcing Web Agents
+- [population_b_scopus.csv] (2025) AGENTOCCAM: A SIMPLE YET STRONG BASELINE FOR LLM-BASED WEB AGENTS
+- [population_b_scopus.csv] (2025) Tree Search for Language Model Agents
+- [population_b_scopus.csv] (2025) Quotes at the fingertips: The combined approach of the BogoSlov project towards identification of Biblical mat
+- [population_b_scopus.csv] (2025) FLOW: MODULARIZED AGENTIC WORKFLOW AUTOMATION
+- [population_b_scopus.csv] (2024) Language Agent Tree Search Unifies Reasoning, Acting, and Planning in Language Models
+- [population_b_scopus.csv] (2025) Affordance Representation and Recognition for Autonomous Agents
+- [population_b_scopus.csv] (2025) DISSECTING ADVERSARIAL ROBUSTNESS OF MULTIMODAL LM AGENTS
+- [population_b_scopus.csv] (2025) Is Your LLM Secretly a World Model of the Internet? Model-Based Planning for Web Agents
+- [population_b_scopus.csv] (2025) RLVR-World: Training World Models with Reinforcement Learning
+- [population_b_scopus.csv] (2025) Fleet of Agents: Coordinated Problem Solving with Large Language Models
+- [population_b_scopus.csv] (2025) Language Models can Self-Improve at State-Value Estimation for Better Search
+- [population_b_scopus.csv] (2025) ReSpAct: Harmonizing Reasoning, Speaking, and Acting Towards Building Large Language Model-Based Conversationa
+- [population_b_scopus.csv] (2025) GUI-Actor: Coordinate-Free Visual Grounding for GUI Agents
+- [population_b_scopus.csv] (2026) Embedding Safe AI Assistants into Web Apps with LLMASP
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2025) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2025) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2025) 
+- [population_b_semantic_scholar.csv] (2025) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2024) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2025) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2025) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2025) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2025) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2025) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2026) 
+- [population_b_semantic_scholar.csv] (2021) 
+- [population_b_semantic_scholar.csv] (2026) 
+
+B: duplicate DOI values removed within B (occurrences):
+1. 10.1007/978-3-032-37595-7_36 (x2)
+2. 10.1007/978-981-92-3438-7_42 (x2)
+3. 10.1038/s41598-026-57474-6 (x2)
+4. 10.1109/ase63991.2025.00284 (x2)
+5. 10.1109/delcon54057.2022.9753518 (x2)
+6. 10.1109/gseact68539.2026.11619948 (x2)
+7. 10.1109/icad69378.2026.11608651 (x3)
+8. 10.1109/icassp55912.2026.11460752 (x2)
+9. 10.1109/icassp55912.2026.11463965 (x2)
+10. 10.1109/iccsdfai70505.2026.11647973 (x3)
+11. 10.1109/iceccs59891.2023.00031 (x3)
+12. 10.1109/icpads67057.2025.11323094 (x3)
+13. 10.1109/ictmim68190.2026.11507472 (x2)
+14. 10.1109/otcon69332.2026.11629951 (x3)
+15. 10.1109/ro-man60168.2024.10731402 (x2)
+16. 10.1145/3680207.3765248 (x3)
+17. 10.1145/3774904.3792996 (x2)
+18. 10.1145/3776591.3833866 (x2)
+19. 10.1145/3804601.3804623 (x2)
+20. 10.1145/3805760.3814915 (x3)
+21. 10.1609/aaai.v40i35.40187 (x2)
+
+Outputs written to: data\clean\extraction-17-10-26

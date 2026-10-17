@@ -2,7 +2,14 @@
 """
 update_population.py
 
-Update the SMS population with a new extraction folder (stdlib csv + bibtexparser, no pandas).
+Update the SMS population with a new extraction folder.
+
+Reading, DOI null handling, DOI normalisation and DOI sorting are imported from clean_data.py,
+so the update is processed exactly like the original population:
+  - .bib -> clean_data.convert_bib_to_csvs (bibtexparser v1, entry.get('doi')) -> *_bib_converted.csv
+  - csv  -> clean_data.read_csv_flexible (pandas) + clean_data.map_and_select (DOI/Document title/Abstract)
+  - null DOI = clean_data.doi_null_mask, DOI key = clean_data.normalize_doi,
+    order = clean_data.sort_by_doi, then keep first per DOI key.
 
 Inputs (data/raw/<folder>/):
   population_a_update_*  -> update search for population A (2025 + 2026 files)
@@ -16,147 +23,85 @@ Outputs (data/clean/<folder>/):
   new_entries.csv          rows of current_population not in the old population (+ population, year)
   population_update_log.txt
 
-Dedup rule (same as clean_data.py): DOI stripped + lowercased, keep first, null DOIs dropped.
 Overlap between the new search and the old population is NOT a duplicate removal: those rows
 are simply not added again (old 2025 entries would otherwise flag as duplicates).
 
 Usage:
-  python update_population.py extraction-12-10-26 --old ../population_11_10_26.csv
+  python update_population.py extraction-17-10-26 --old ../population_11_10_26.csv --orig-raw extraction-26-11-25
 """
 
 import argparse
-import csv
 import re
-import sys
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
-try:
-    import bibtexparser
-except Exception:
-    bibtexparser = None
+import pandas as pd
+
+from clean_data import (convert_bib_to_csvs, doi_null_mask, guess_column, map_and_select,
+                        normalize_doi, read_csv_flexible, sort_by_doi)
 
 DATA_RAW_DIR = Path("data") / "raw"
 DATA_CLEAN_DIR = Path("data") / "clean"
 COLS = ["DOI", "Document title", "Abstract"]
 MIN_YEAR = 2025
-PARSE_WARNINGS = []
-
-csv.field_size_limit(sys.maxsize)
+DBS = ("scopus", "ieee", "acm")
 
 
-def read_csv_flexible(path: Path):
-    for enc in ("utf-8-sig", "latin1"):
-        try:
-            with open(path, newline="", encoding=enc) as fh:
-                return list(csv.DictReader(fh))
-        except UnicodeDecodeError:
-            continue
-    raise RuntimeError(f"Failed to read CSV {path}")
+def txt(v):
+    """Cell value as str ('' for NaN)."""
+    return "" if v is None or (not isinstance(v, str) and pd.isna(v)) else str(v)
 
 
-def guess_column(cols, keywords):
-    lowered = {c.lower().strip(): c for c in cols}
-    for key in keywords:
-        for low, orig in lowered.items():
-            if key in low:
-                return orig
-    return None
-
-
-def norm_doi(raw):
-    """Strip, lowercase, drop doi.org URL prefix. Returns (doi, was_changed_beyond_case/strip)."""
-    s = (raw or "").strip()
-    if s.upper() == "NA":
-        return "", False
-    s2 = re.sub(r"^(https?://)?(dx\.)?doi\.org/", "", s, flags=re.I).strip()
-    s2 = re.sub(r"^doi:\s*", "", s2, flags=re.I).strip()
-    return s2.lower(), s2 != s
+def doi_keys(series: pd.Series) -> pd.Series:
+    """clean_data DOI key per row; '' where clean_data counts the DOI as null."""
+    s = series.astype(object)
+    return normalize_doi(s).where(~doi_null_mask(s), "")
 
 
 def parse_year(raw):
-    m = re.search(r"(19|20)\d{2}", str(raw or ""))
+    m = re.search(r"(19|20)\d{2}", txt(raw))
     return int(m.group(0)) if m else None
 
 
-def rows_from_csv(path: Path):
-    data = read_csv_flexible(path)
-    if not data:
-        return []
-    cols = list(data[0].keys())
-    doi_c = guess_column(cols, ["doi"])
-    title_c = guess_column(cols, ["document title", "title"])
-    abs_c = guess_column(cols, ["abstract", "summary"])
-    year_c = guess_column(cols, ["publication year", "year"])
-    file_year = None
-    m = re.search(r"_(20\d{2})_", path.name)
-    if m:
-        file_year = int(m.group(1))
-    out = []
-    for r in data:
-        year = parse_year(r.get(year_c)) if year_c else None
-        out.append({
-            "DOI": r.get(doi_c, "") if doi_c else "",
-            "Document title": (r.get(title_c) or "") if title_c else "",
-            "Abstract": (r.get(abs_c) or "") if abs_c else "",
-            "year": year if year is not None else file_year,
-            "source": path.name,
-        })
-    return out
+def file_year(name):
+    m = re.search(r"_(20\d{2})(?=[_.])", name)
+    return int(m.group(1)) if m else None
 
 
-def rows_from_bib(path: Path):
-    if bibtexparser is None:
-        raise SystemExit("Found .bib files but `bibtexparser` is not installed (pip install bibtexparser).")
-    text = path.read_text(encoding="utf-8", errors="ignore")
-    out = []
-    if hasattr(bibtexparser, "parse_string"):  # bibtexparser v2
-        lib = bibtexparser.parse_string(text)
-        for e in lib.entries:
-            f = e.fields_dict
-            g = lambda k: f[k].value if k in f else ""
-            out.append((g("doi"), g("title"), g("abstract"), g("year")))
-        # malformed entries: salvage fields with regexes instead of silently losing them
-        for fb in lib.failed_blocks:
-            raw = getattr(fb, "raw", "") or ""
-            fld = lambda k: (re.search(r"(?<![a-z])" + k + r"\s*=\s*\{(.*?)\},?\s*\n", raw, re.S | re.I) or [None, ""])[1]
-            key = re.match(r"\s*@\w+\{\s*([^,\s]+),", raw)  # ACM entry keys are the DOI
-            doi = fld("doi") or (key.group(1) if key and key.group(1).startswith("10.") else "")
-            out.append((doi, fld("title"), fld("abstract"), fld("year")))
-            PARSE_WARNINGS.append(f"{path.name}: salvaged malformed entry doi={doi or '?'}")
-    else:  # v1
-        db = bibtexparser.loads(text)
-        for e in db.entries:
-            out.append((e.get("doi", ""), e.get("title", ""), e.get("abstract", ""), e.get("year", "")))
-    rows = []
-    file_year = None
-    m = re.search(r"_(20\d{2})_", path.name)
-    if m:
-        file_year = int(m.group(1))
-    for doi, title, abstract, year in out:
-        y = parse_year(year)
-        rows.append({
-            "DOI": doi,
-            "Document title": re.sub(r"\s+", " ", title.replace("{", "").replace("}", "")).strip(),
-            "Abstract": abstract.strip(),
-            "year": y if y is not None else file_year,
-            "source": path.name,
-        })
-    return rows
+def bib_entry_count(path: Path):
+    return len(re.findall(r"^\s*@\w+\s*\{", path.read_text(encoding="utf-8", errors="ignore"), re.M))
+
+
+def load_csvs(paths):
+    """Read csvs like clean_data (read_csv_flexible + map_and_select), sorted by DOI like clean_data.
+    Returns list of row dicts (DOI = clean_data key, raw_DOI = as read) and per-file row counts."""
+    parts, counts = [], {}
+    for p in paths:
+        df = read_csv_flexible(p)
+        sel = map_and_select(df)
+        year_c = guess_column(df.columns, ["publication year", "year"])  # only needed for the year filter
+        years = [parse_year(v) for v in df[year_c]] if year_c else [None] * len(df)
+        sel["year"] = [y if y is not None else file_year(p.name) for y in years]
+        sel["source"] = p.name
+        counts[p.name] = len(sel)
+        parts.append(sel)
+    if not parts:
+        return [], counts
+    merged = sort_by_doi(pd.concat(parts, ignore_index=True, sort=False))
+    merged["raw_DOI"] = merged["DOI"]
+    merged["DOI"] = doi_keys(merged["DOI"])
+    rows = merged.to_dict("records")
+    for r in rows:
+        r["Document title"], r["Abstract"], r["raw_DOI"] = txt(r["Document title"]), txt(r["Abstract"]), txt(r["raw_DOI"])
+    return rows, counts
 
 
 def load_group(raw_dir: Path, prefix: str):
-    """Load every csv/bib starting with prefix. Returns rows, per-source raw counts."""
-    rows, counts = [], {}
+    """Load every population file starting with prefix; .bib files go through convert_bib_to_csvs."""
     files = sorted(p for p in raw_dir.iterdir()
-                   if p.name.startswith(prefix) and p.suffix.lower() in (".csv", ".bib")
-                   and p.name != "merged.csv")
-    for p in files:
-        r = rows_from_bib(p) if p.suffix.lower() == ".bib" else rows_from_csv(p)
-        counts[p.name] = len(r)
-        rows.extend(r)
-    return rows, counts
+                   if p.name.startswith(prefix) and p.suffix.lower() == ".csv" and p.name != "merged.csv")
+    return load_csvs(files)
 
 
 def is_blank(s):
@@ -165,25 +110,17 @@ def is_blank(s):
 
 def write_csv(path: Path, rows, cols):
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
+    pd.DataFrame(rows).reindex(columns=cols).to_csv(path, index=False)
 
 
-def prepare(rows):
-    """Normalise DOIs; split null-DOI rows. Returns (with_doi, null_rows, n_prefix_fixed)."""
-    good, null, fixed = [], [], 0
-    for r in rows:
-        doi, changed = norm_doi(r["DOI"])
-        fixed += changed
-        r = dict(r, DOI=doi)
-        (null if not doi else good).append(r)
-    return good, null, fixed
+def split_null(rows):
+    """Rows with / without a DOI (clean_data.doi_null_mask)."""
+    return [r for r in rows if r["DOI"]], [r for r in rows if not r["DOI"]]
 
 
 def dedupe(rows):
-    """Keep first per DOI. Returns (kept, dup_counter {doi: total occurrences}, removed_rows)."""
+    """Keep first per DOI key (rows are in clean_data sort order).
+    Returns (kept, dup_counter {doi: total occurrences}, removed_rows)."""
     seen, kept, removed = set(), [], []
     occ = Counter(r["DOI"] for r in rows)
     for r in rows:
@@ -199,24 +136,192 @@ def src_counts(rows):
     return dict(Counter(r["source"] for r in rows))
 
 
-def update_population(folder: str, old_path: Path):
+def db_of(name):
+    """Database from a file name: acm / ieee (also 'iee') / scopus."""
+    low = name.lower()
+    for db, keys in (("acm", ("acm",)), ("ieee", ("ieee", "iee")), ("scopus", ("scopus",))):
+        if any(k in low for k in keys):
+            return db
+    return "?"
+
+
+def norm_title(t):
+    return re.sub(r"[^a-z0-9]", "", (t or "").lower())
+
+
+def doi_audit(raw_dois):
+    """Format audit of DOI strings as read (before normalisation)."""
+    vals = [txt(d) for d in raw_dois]
+    filled = [d for d in vals if d.strip()]
+    return (f"n={len(vals)} null={len(vals) - len(filled)} "
+            f"whitespace={sum(d != d.strip() for d in filled)} "
+            f"uppercase={sum(d != d.lower() for d in filled)} "
+            f"url/doi:-prefix={sum(bool(re.match(r'\s*(https?://|doi:)', d, re.I)) for d in filled)} "
+            f"not-starting-10.={sum(not d.strip().lower().startswith('10.') for d in filled)}")
+
+
+def parse_xplore_date(s):
+    for fmt in ("%d %b %Y", "%d-%b-%Y", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(txt(s).strip(), fmt)
+        except ValueError:
+            pass
+    return None
+
+
+def a_vs_original(orig_dir: Path, raw_dir: Path, old_df, old_set, a_raw, a_ok, a_null,
+                  a_year, a_dedup, a_in_old, a_update, orig_date: datetime):
+    """Per-database breakdown of the A update and consistency checks against the original export."""
+    L = []
+    # ---- original export, per db (acm = the acm_bib_converted.csv the old population was built from) ----
+    orig_files = sorted(p for p in orig_dir.iterdir() if p.suffix.lower() == ".csv" and p.name != "merged.csv")
+    orig_rows, orig_counts = load_csvs(orig_files)
+    orig = {}
+    for r in orig_rows:
+        orig.setdefault(db_of(r["source"]), []).append(r)
+    orig_dbs = {}  # doi -> set of original dbs
+    for r in orig_rows:
+        if r["DOI"]:
+            orig_dbs.setdefault(r["DOI"], set()).add(db_of(r["source"]))
+    orig_titles = {norm_title(r["Document title"]) for r in orig_rows} - {""}
+
+    def tag(dbs):
+        return "+".join(sorted(dbs)) if dbs else "(not in orig export)"
+
+    L += ["", "ORIGINAL EXPORT (comparison base)",
+          f"Folder: {orig_dir}  files: {orig_counts}",
+          "Rows per database: " + ", ".join(f"{db}={len(orig.get(db, []))}" for db in DBS)]
+    for p in sorted(orig_dir.glob("*.bib")):
+        L.append(f"  {p.name}: {bib_entry_count(p)} @entries in .bib (converted csv is the source used)")
+
+    # old population vs complete original export
+    orig_multi = Counter(r["DOI"] for r in orig_rows)
+    old_multi = Counter(doi_keys(old_df["DOI"]))
+    only_orig = sorted(set(orig_multi) - set(old_multi) - {""})
+    only_old = sorted(set(old_multi) - set(orig_multi) - {""})
+    L += [f"Old population rows: {len(old_df)}  vs original export rows: {len(orig_rows)}",
+          f"Old population = complete original export (same DOI multiset, nulls/dups included): "
+          f"{'YES' if orig_multi == old_multi else 'NO'}",
+          f"  DOIs only in original export ({len(only_orig)}): {only_orig or '(none)'}",
+          f"  DOIs only in old population ({len(only_old)}): {only_old or '(none)'}",
+          "  -> A is compared against every record of the original search, incl. those excluded at screening."]
+
+    # ---- per-db pipeline for A ----
+    def per(rows):
+        return Counter(db_of(r["source"]) for r in rows)
+    raw_c, null_c, ok_c, year_c = per(a_raw), per(a_null), per(a_ok), per(a_year)
+    within = Counter()
+    for db in DBS:
+        within[db] = len({r["DOI"] for r in a_year if db_of(r["source"]) == db})
+    first_c, inold_c = per(a_dedup), per(a_in_old)
+    add25 = per(r for r in a_update if r["year"] == 2025)
+    add26 = per(r for r in a_update if r["year"] and r["year"] > 2025)
+    hdr = ["db", "raw", "nullDOI", "yearDrop", "kept", "uniqInDB", "firstSeen", "inOld", "add2025", "add>2025", "added"]
+    tbl = [hdr]
+    for db in DBS + ("TOTAL",):
+        g = (lambda c: sum(c[d] for d in DBS)) if db == "TOTAL" else (lambda c, db=db: c[db])
+        tbl.append([db, g(raw_c), g(null_c), g(ok_c) - g(year_c), g(year_c), g(within),
+                    g(first_c), g(inold_c), g(add25), g(add26), g(add25) + g(add26)])
+    w = [max(len(str(r[i])) for r in tbl) for i in range(len(hdr))]
+    L += ["", "POPULATION A: PER-DATABASE BREAKDOWN",
+          "raw=rows in export files (acm: rows of *_bib_converted.csv) | nullDOI=dropped, clean_data.doi_null_mask",
+          "yearDrop=year<%d | kept=with DOI and year ok | uniqInDB=unique DOIs within that db (before cross-db dedup)" % MIN_YEAR,
+          "firstSeen=unique after cross-db dedup (first row in clean_data DOI sort order) | inOld=already in old population",
+          ""] + ["  ".join(str(c).rjust(w[i]) for i, c in enumerate(r)) for r in tbl]
+    upd_dbs = {}
+    for r in a_year:
+        upd_dbs.setdefault(r["DOI"], set()).add(db_of(r["source"]))
+    L += ["Cross-database duplicates within A (DOI found in several dbs): " +
+          str(dict(sorted(Counter(tag(s) for s in upd_dbs.values() if len(s) > 1).items())) or "(none)")]
+
+    # ---- overlap matrix ----
+    m_first = Counter((tag(orig_dbs.get(r["DOI"])), db_of(r["source"])) for r in a_in_old)
+    m_all = Counter((tag(orig_dbs.get(d)), tag(upd_dbs[d])) for d in {r["DOI"] for r in a_in_old})
+    L += ["", f"OVERLAP WITH ORIGINAL EXPORT: (original_db, new_db) = N   [total {len(a_in_old)}]",
+          "first-seen new db (sums to the overlap total):"]
+    L += [f"  ({o}, {n}) = {c}" for (o, n), c in sorted(m_first.items())]
+    L += ["full membership (every db the DOI appears in, both sides):"]
+    L += [f"  ({o}, {n}) = {c}" for (o, n), c in sorted(m_all.items())]
+    L += ["overlap by new db and year: " + str(dict(sorted(Counter((db_of(r['source']), r['year']) for r in a_in_old).items())))]
+
+    # ---- consistency checks ----
+    L += ["", "CONSISTENCY CHECKS (A vs original)",
+          "DOI rule, all sides (original export, old population, update): imported from clean_data.py",
+          "  read_csv_flexible + map_and_select, null = doi_null_mask, key = normalize_doi (strip + lower),",
+          "  order = sort_by_doi, keep first; .bib via convert_bib_to_csvs (entry.get('doi'))",
+          "DOI format audit (values as read):"]
+    for db in DBS:
+        L.append(f"  original {db:7} {doi_audit(r['raw_DOI'] for r in orig.get(db, []))}")
+    for db in DBS:
+        L.append(f"  update   {db:7} {doi_audit(r['raw_DOI'] for r in a_raw if db_of(r['source']) == db)}")
+    L.append(f"  old population  {doi_audit(old_df['DOI'])}")
+    L += ["Rows with empty title (map_and_select only matches a 'document title' column): " +
+          ", ".join(f"original {db}={sum(is_blank(r['Document title']) for r in orig.get(db, []))}" for db in DBS) + " | " +
+          ", ".join(f"update {db}={sum(is_blank(r['Document title']) for r in a_raw if db_of(r['source']) == db)}" for db in DBS)]
+    for p in sorted(raw_dir.glob("population_a_update_*.bib")):
+        conv = p.with_name(p.stem + "_bib_converted.csv")
+        n_conv = len(read_csv_flexible(conv)) if conv.exists() else 0
+        L.append(f"  {p.name}: {bib_entry_count(p)} @entries in .bib, {n_conv} rows after convert_bib_to_csvs")
+    t_added = [r for r in a_update if norm_title(r["Document title"]) in orig_titles]
+    L += [f"Added rows whose normalised TITLE is in the original export (possible DOI mismatch): {len(t_added)}"]
+    L += [f"  - [{db_of(r['source'])}] ({r['year']}) {r['DOI']}  {r['Document title'][:90]}" for r in t_added]
+    t_null = [r for r in a_null if norm_title(r["Document title"]) in orig_titles]
+    L += [f"Null-DOI A rows (dropped) whose title is in the original export: {len(t_null)} of {len(a_null)}"]
+    L += [f"Year filter: original export years are set by the query; update files are split per year "
+          f"(2025 / 2026) and filtered year>={MIN_YEAR} (year column, else file name). Update years per db: " +
+          str(dict(sorted(Counter((db_of(r['source']), r['year']) for r in a_raw).items(), key=str)))]
+
+    # IEEE: date added to Xplore + content types
+    ieee_upd = pd.concat([read_csv_flexible(p) for p in sorted(raw_dir.glob("population_a_update_*ieee*.csv"))],
+                         ignore_index=True)
+    ieee_orig = pd.concat([read_csv_flexible(p) for p in orig_files if db_of(p.name) == "ieee"], ignore_index=True)
+    if "Date Added To Xplore" in ieee_upd.columns:
+        ieee_upd["key"] = doi_keys(ieee_upd["DOI"])
+        ieee_upd["pyear"] = ieee_upd["Publication Year"].map(parse_year)
+        ieee_upd["added"] = ieee_upd["Date Added To Xplore"].map(parse_xplore_date)
+        y25 = ieee_upd[(ieee_upd["key"] != "") & (ieee_upd["pyear"] == 2025)]
+        st = Counter()
+        for k, t in zip(y25["key"], y25["added"]):
+            when = "no date" if t is None or pd.isna(t) else (
+                "added BEFORE orig search" if t < orig_date else "added ON/AFTER orig search")
+            st[("in old" if k in old_set else "new", when)] += 1
+        o_dates = [t for t in ieee_orig["Date Added To Xplore"].map(parse_xplore_date) if t]
+        latest = f"{max(o_dates):%Y-%m-%d}" if o_dates else "?"
+        L += ["", f"IEEE 2025 records by 'Date Added To Xplore' vs original search date {orig_date:%Y-%m-%d} "
+                  f"(latest date in original export: {latest})"]
+        L += [f"  {k[0]:6} | {k[1]}: {n}" for k, n in sorted(st.items())]
+        L += ["  'new' + 'BEFORE' = records in Xplore at search time but not returned then (same query string):",
+              "  most likely metadata enriched after the original search (index terms added later); not verifiable here."]
+        dt_key = "Document Identifier"
+        pre = y25[[k not in old_set and t is not None and not pd.isna(t) and t < orig_date
+                   for k, t in zip(y25["key"], y25["added"])]]
+        L += ["IEEE content types, original: " + str(ieee_orig[dt_key].value_counts().to_dict()),
+              "IEEE content types, update:   " + str(ieee_upd[dt_key].value_counts().to_dict()),
+              "IEEE content types of new 2025 records added BEFORE orig search: " + str(pre[dt_key].value_counts().to_dict())]
+    return L
+
+
+def update_population(folder: str, old_path: Path, orig_raw: str = None, orig_date: str = "2025-11-26"):
     raw_dir = DATA_RAW_DIR / folder
     out_dir = DATA_CLEAN_DIR / folder
     if not raw_dir.is_dir():
         raise SystemExit(f"Folder not found: {raw_dir}")
 
+    # .bib -> *_bib_converted.csv, exactly as clean_data does (only for the update folder)
+    convert_bib_to_csvs(folder)
+
     # ---- old population ----
-    old_rows = read_csv_flexible(old_path)
-    old_rows = [{"DOI": (r.get("DOI") or "").strip(), "Document title": r.get("Document title", ""),
-                 "Abstract": r.get("Abstract", "")} for r in old_rows]
-    old_null = [r for r in old_rows if not r["DOI"]]
-    old_dois = Counter(r["DOI"].lower() for r in old_rows if r["DOI"])
+    old_df = read_csv_flexible(old_path)
+    old_keys = doi_keys(old_df["DOI"])
+    old_rows = [{c: txt(r.get(c)) for c in COLS} for r in old_df.to_dict("records")]
+    old_null = int((old_keys == "").sum())
+    old_dois = Counter(k for k in old_keys if k)
     old_internal_dups = {d: n for d, n in old_dois.items() if n > 1}
     old_set = set(old_dois)
 
     # ---- group A ----
     a_raw, a_files = load_group(raw_dir, "population_a_update")
-    a_ok, a_null, a_fixed = prepare(a_raw)
+    a_ok, a_null = split_null(a_raw)
     a_year_drop = [r for r in a_ok if r["year"] is None or r["year"] < MIN_YEAR]
     a_year = [r for r in a_ok if not (r["year"] is None or r["year"] < MIN_YEAR)]
     a_year_null = [r for r in a_null if not (r["year"] is None or r["year"] < MIN_YEAR)]
@@ -229,7 +334,7 @@ def update_population(folder: str, old_path: Path):
 
     # ---- group B ----
     b_raw, b_files = load_group(raw_dir, "population_b")
-    b_ok, b_null, b_fixed = prepare(b_raw)
+    b_ok, b_null = split_null(b_raw)
     b_dedup, b_dups, b_removed = dedupe(b_ok)
     b_in_old = [r for r in b_dedup if r["DOI"] in old_set]
     b_in_a = [r for r in b_dedup if r["DOI"] in a_set]
@@ -293,15 +398,16 @@ def update_population(folder: str, old_path: Path):
          f"A: {len(a_update)}   B: {len(b_added)}",
          "",
          "EXTRA CHECKS",
-         f"Old population null DOIs: {len(old_null)}; internal duplicate DOIs: {len(old_internal_dups)} (old rows kept as-is in current_population)",
-         f"Malformed .bib entries: {PARSE_WARNINGS or '(none)'}",
-         f"DOIs normalised beyond strip/lowercase (doi.org prefix etc.): A={a_fixed}, B={b_fixed}",
+         f"Old population null DOIs: {old_null}; internal duplicate DOIs: {len(old_internal_dups)} (old rows kept as-is in current_population)",
          f"A rows missing title/abstract: {miss(a_update,'Document title')}/{miss(a_update,'Abstract')}",
          f"B rows missing title/abstract: {miss(b_dedup,'Document title')}/{miss(b_dedup,'Abstract')}",
          f"A raw rows per file: {a_files}", f"B raw rows per file: {b_files}",
          f"A rows added per source (first-seen): {src_counts(a_update)}",
          f"B rows added per source (first-seen): {src_counts(b_added)}",
-         f"A update by year: {dict(sorted(Counter(r['year'] for r in a_update).items()))}",
+         f"A update by year: {dict(sorted(Counter(r['year'] for r in a_update).items(), key=str))}",
+         ] + (a_vs_original(DATA_RAW_DIR / orig_raw, raw_dir, old_df, old_set, a_raw, a_ok, a_null, a_year,
+                            a_dedup, a_in_old, a_update, datetime.strptime(orig_date, "%Y-%m-%d"))
+              if orig_raw else []) + [
          "",
          "DETAILS",
          "A: missing DOIs (all years; year shown):"] + null_list(a_null) + [
@@ -318,10 +424,13 @@ def update_population(folder: str, old_path: Path):
 
 def main():
     ap = argparse.ArgumentParser(description="Update the SMS population with a new extraction folder.")
-    ap.add_argument("folder", help="Subfolder in data/raw/, e.g. extraction-12-10-26")
+    ap.add_argument("folder", help="Subfolder in data/raw/, e.g. extraction-17-10-26")
     ap.add_argument("--old", required=True, type=Path, help="Path to the old population csv")
+    ap.add_argument("--orig-raw", help="Subfolder in data/raw/ with the original population A export, "
+                                       "e.g. extraction-26-11-25 (enables per-db breakdown and checks)")
+    ap.add_argument("--orig-date", default="2025-11-26", help="Date of the original search (YYYY-MM-DD)")
     args = ap.parse_args()
-    update_population(args.folder, args.old)
+    update_population(args.folder, args.old, args.orig_raw, args.orig_date)
 
 
 if __name__ == "__main__":
